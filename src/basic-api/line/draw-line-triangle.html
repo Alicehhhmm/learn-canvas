@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas - 绘制描边三角形（线性）</title>
+    <style>
+        canvas {
+            border: 1px solid sandybrown;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <Canvas id="canvas2d" width="400" height="300">
+        The current browser does not support canvas
+    </Canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas2d')
+
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d')
+
+            // 描边直角三角形：
+            // 以三个坐标点的路径绘制过程形成
+
+            // 起点（x:50, y:50）
+            // 经过点（x:50, y:100）
+            // 终点（x:100, y:100）
+            ctx.beginPath()
+            ctx.moveTo(50, 50);
+            ctx.lineTo(50, 100);
+            ctx.lineTo(100, 100)
+            ctx.closePath()
+            ctx.stroke()
+        }
+    </script>
+</body>
+
+</html>
