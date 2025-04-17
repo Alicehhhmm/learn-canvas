@@ -4,22 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>二次贝塞尔曲线交互示例</title>
+    <title>二次贝塞尔曲线案例 / Canvas Quadratic Curve</title>
     <style>
+        :root {
+            --primary-color: blue;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #34495e;
+            --code-bg: #f8f9fa;
+            --border-radius: 8px;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #95a5a6;
+            --code-bg: #f8f9fa;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            padding: 0;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            gap: 20px;
+            padding: 0 20px;
+            background-color: #f5f5f5;
         }
 
         .container {
             display: flex;
-            flex-direction: row;
-            gap: 20px;
+            flex-direction: column;
         }
 
         .header span {
@@ -32,83 +44,243 @@
             border-radius: 4px;
         }
 
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .main-content {
+            display: flex;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .canvas-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
         canvas {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             margin-bottom: 20px;
-            cursor: default;
+            background-color: #fff;
+        }
+
+        .code-container {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 20px;
         }
 
         .code-preview {
-            flex: 1;
-            background-color: #f8f8f8;
+            background-color: #f0f0f0;
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 0 10px;
             border-radius: 4px;
             font-family: monospace;
-            width: 400px;
             margin-bottom: 20px;
             overflow: auto;
         }
 
-        #codeExample {
-            display: block;
-            width: auto;
-            height: 11em;
-            font-family: monospace;
-            font-size: 1em;
-            padding: 2px 4px;
-            margin: 0;
+        .code-description {
+            font-size: 14px;
             color: #555;
-            background-color: #eee;
-            border: 1px solid #999;
-            overflow: auto;
         }
 
         #codeExample span {
             font-family: Helvetica, sans-serif;
         }
 
-        .code-description {
-            margin-top: 10px;
+        #cpx1,
+        #cpy1 {
+            color: var(--accent-color);
+        }
+
+        .description-row,
+        .formula-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .formula {
             font-family: Arial, sans-serif;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .subscript {
+            vertical-align: sub;
+            font-size: 0.8em;
+        }
+
+        .superscript {
+            vertical-align: super;
+            font-size: 0.8em;
+        }
+
+        .formula-values {
+            min-width: 120px;
+            padding: 0 10px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+        }
+
+        .slider-container {
+            margin-top: 20px;
+        }
+
+        .slider-container label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .point-labels p {
+            color: #7f8c8d;
+            background-color: #f8f8f8;
+        }
+
+        /* 页脚 */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: var(--dark-gray);
             font-size: 14px;
-            color: #555;
+            padding-top: 20px;
+            border-top: 1px solid var(--medium-gray);
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <h1>二次贝塞尔曲线案例 / <span>Canvas Quadratic Curve </span></h1>
-        <p>拖动蓝色点可以改变起始点和结束点，拖动红色点可以改变控制点位置</p>
-    </div>
-
     <div class="container">
-        <canvas id="canvas2d" width="600" height="400">
-            您的浏览器不支持Canvas元素
-        </canvas>
+        <div class="header">
+            <h1>二次贝塞尔曲线案例 / <span>Canvas Quadratic Curve </span></h1>
+            <p>拖动蓝色点可以改变起始点和结束点，拖动红色点可以改变控制点位置</p>
+        </div>
 
-        <div class="code-preview">
-            <pre id="codeExample">
-ctx.beginPath();
-ctx.moveTo(<span id="startX">50</span>, <span id="startY">50</span>);
-ctx.quadraticCurveTo(<span id="cpx1">200</span>, <span id="cpy1">200</span>, <span id="endX">300</span>, <span id="endY">50</span>);
-ctx.stroke();
-            </pre>
-            <div class="code-description">
-                <p>
-                    二次贝塞尔曲线 (二次方程曲线): <br>
-                    quadraticCurveTo(cq1x,cq1y,x,y)<br>
-                    - 控制点坐标(cq1x,cq1y)<br>
-                    - 结束点坐标(x,y)</p>
-                </p>
+        <div class="main-content">
+            <div class="canvas-container">
+                <canvas id="canvas2d" width="500" height="400"></canvas>
+
+                <div class="slider-container">
+                    <span>参数 t 值:</span>
+                    <input type="range" id="t-value" min="0" max="100" value="0" step="1">
+                    <span id="t-display">t = 0.00</span>
+                </div>
+
+                <div class="point-labels">
+                    <p>
+                        <b style="color: var(--secondary-color);">◉ </b>蓝色：端点 P0、P2
+                        <b style="color: var(--accent-color)">◉ </b> 红色：控制点 P1
+                        <b style="color: green;">◉ </b>绿色：中介点 Q0、Q1
+                    </p>
+                </div>
             </div>
+
+            <div class="code-container">
+                <div class="code-preview">
+                    <pre id="codeExample">
+ctx.beginPath();
+ctx.moveTo(<span id="startX">120</span>, <span id="startY">220</span>);
+ctx.quadraticCurveTo(<span id="cpx1">190</span>, <span id="cpy1">90</span>, <span id="endX">310</span>, <span id="endY">210</span>);
+ctx.stroke();
+                    </pre>
+                </div>
+
+                <div class="code-description">
+                    <div class="description-row">
+                        <div class="ll-desc">
+                            <h4>二次贝塞尔曲线理论知识:</h4>
+                            <p>
+                                二次贝塞尔曲线是由三个点定义的参数曲线：
+                                <br>
+                                - 起始点 (P0)
+                                <br>
+                                - 控制点 (P1)
+                                <br>
+                                - 结束点 (P2)
+                            </p>
+                            <p>
+                                曲线的形状由控制点决定，曲线不会经过控制点，但会朝着控制点的方向弯曲。
+                            </p>
+                            <p>
+                                二次贝塞尔曲线的参数方程为：<br>
+                                <br>
+                                <span class="formula">
+                                    <span class="bold">B</span>(t) =
+                                    (1 - t)<span class="superscript">2</span>
+                                    <span class="bold">P</span><span class="subscript">0</span> +
+                                    2t(1 - t)
+                                    <span class="bold">P</span><span class="subscript">1</span> +
+                                    t<span class="superscript">2</span>
+                                    <span class="bold">P</span><span class="subscript">2</span>
+                                    <span style="margin-left: 1em;">（t ∈ [0, 1]）</span>
+                                </span><br>
+                                <br>
+                                其中 ( t ) 表示在曲线轨迹上,移动的进度参数，取值范围为[0, 1]区间。<br>
+                            </p>
+                            <p>
+                                为了构建二次贝塞尔曲线，可以使用中介点 Q0 和 Q1：
+                                <br>
+                                - Q0 是 P0 和 P1 之间的线性插值点。
+                                <br>
+                                - Q1 是 P1 和 P2 之间的线性插值点。
+                                <br>
+                                - B(t) 是 Q0 和 Q1 之间的线性插值点。
+                            </p>
+                        </div>
+                        <div class="yf-desc">
+                            <h4>Canvas中的二次贝塞尔曲线语法:</h4>
+                            <p>
+                                quadraticCurveTo(cq1x, cq1y, x, y)<br>
+                                - 起始点：通过 `moveTo()` 方法设置<br>
+                                - 控制点坐标：(cq1x, cq1y)<br>
+                                - 结束点坐标：(x, y)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="formula-row">
+                        <div class="formula-values">
+                            <h4>中介点公式数值:</h4>
+                            <p>Q0: (<span id="q0x">0</span>, <span id="q0y">0</span>)</p>
+                            <p>Q1: (<span id="q1x">0</span>, <span id="q1y">0</span>)</p>
+                            <p>B(t): (<span id="btx">0</span>, <span id="bty">0</span>)</p>
+                        </div>
+                        <div>
+                            <h4>中介点计算公式:</h4>
+                            <p> Q0 = P0 + t * (P1 - P0)</p>
+                            <p> Q1 = P1 + t * (P2 - P1)</p>
+                            <p> B(t) = Q0 + t * (Q1 - Q0)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <a href="https://github.com/Alicehhhmm/learn-canvas.git" class="repo-link" target="_blank">
+                <svg class="repo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="#555">
+                    <path
+                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                </svg>
+            </a>
+            <p>&copy; 2025 Norush. </p>
         </div>
     </div>
 
     <script>
         const canvas = document.getElementById('canvas2d');
         const ctx = canvas.getContext('2d');
+        const tSlider = document.getElementById('t-value');
+        const tDisplay = document.getElementById('t-display');
 
         // 初始化点的位置
         let startX = 120, startY = 220;
@@ -120,39 +292,72 @@ ctx.stroke();
         let currentPoint = null;
 
         // 绘制函数
-        function draw () {
+        function draw (t) {
             // 清空画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 计算中介点 Q0 和 Q1
+            const q0x = startX + t * (cpx1 - startX);
+            const q0y = startY + t * (cpy1 - startY);
+            const q1x = cpx1 + t * (endX - cpx1);
+            const q1y = cpy1 + t * (endY - cpy1);
+
+            // 计算当前点 B(t)
+            const btX = q0x + t * (q1x - q0x);
+            const btY = q0y + t * (q1y - q0y);
+
+            // 更新公式数值显示
+            updateFormulaValue(q0x, q0y, q1x, q1y, btX, btY);
 
             // 绘制控制线
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(cpx1, cpy1);
             ctx.lineTo(endX, endY);
-            ctx.strokeStyle = '#aaa';
             ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#aaa';
+            ctx.lineWidth = 2;
             ctx.stroke();
             ctx.setLineDash([]);
+
+            // 绘制中介线
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(q0x, q0y);
+            ctx.lineTo(btX, btY);
+            ctx.lineTo(q1x, q1y);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
             // 绘制贝塞尔曲线
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.quadraticCurveTo(cpx1, cpy1, endX, endY);
             ctx.strokeStyle = '#333';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 4;
             ctx.stroke();
+
+            // 绘制中介点
+            ctx.fillStyle = 'green';
+            ctx.beginPath();
+            ctx.arc(q0x, q0y, 4, 0, Math.PI * 2);
+            ctx.arc(q1x, q1y, 4, 0, Math.PI * 2);
+            ctx.arc(btX, btY, 4, 0, Math.PI * 2);
+            ctx.fill();
 
             // 绘制起始点和结束点
             ctx.fillStyle = 'blue';
             ctx.beginPath();
-            ctx.arc(startX, startY, 6, 0, Math.PI * 2);
-            ctx.arc(endX, endY, 6, 0, Math.PI * 2);
+            ctx.arc(startX, startY, 8, 0, Math.PI * 2);
+            ctx.arc(endX, endY, 8, 0, Math.PI * 2);
             ctx.fill();
 
             // 绘制控制点
             ctx.fillStyle = 'red';
             ctx.beginPath();
-            ctx.arc(cpx1, cpy1, 6, 0, Math.PI * 2);
+            ctx.arc(cpx1, cpy1, 8, 0, Math.PI * 2);
             ctx.fill();
 
             // 绘制文本标签
@@ -168,34 +373,44 @@ ctx.stroke();
 
             // 标记 P2
             ctx.fillText('P2', endX, endY - 10);
+
+            // 标记 Q0
+            ctx.fillText('Q0', q0x, q0y - 10);
+
+            // 标记 Q1
+            ctx.fillText('Q1', q1x, q1y - 10);
+
+            // 标记 B(t)
+            ctx.fillText('B(t)', btX, btY + 20);
         }
 
         // 更新代码示例
         function updateCodeExample () {
             document.getElementById('startX').textContent = Math.round(startX);
             document.getElementById('startY').textContent = Math.round(startY);
-            document.getElementById('endX').textContent = Math.round(endX);
-            document.getElementById('endY').textContent = Math.round(endY);
             document.getElementById('cpx1').textContent = Math.round(cpx1);
             document.getElementById('cpy1').textContent = Math.round(cpy1);
+            document.getElementById('endX').textContent = Math.round(endX);
+            document.getElementById('endY').textContent = Math.round(endY);
         }
 
-        /** 
-         * 算法：两点间的 ​欧几里得距离（直线距离）
-         * @see https://zh.wikipedia.org/wiki/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB
-         * 作用：检查是否点击了某个点
-         * 入参：
-         * - mouseX, mouseY：鼠标当前坐标
-         * - targetX, targetY：目标点坐标
-         * - threshold: 间距阀值
-        */
+        // 更新公式数值显示
+        function updateFormulaValue (q0x, q0y, q1x, q1y, btX, btY) {
+            document.getElementById('q0x').textContent = Math.round(q0x);
+            document.getElementById('q0y').textContent = Math.round(q0y);
+            document.getElementById('q1x').textContent = Math.round(q1x);
+            document.getElementById('q1y').textContent = Math.round(q1y);
+            document.getElementById('btx').textContent = Math.round(btX);
+            document.getElementById('bty').textContent = Math.round(btY);
+        }
+
+        // 检查鼠标是否在某个点附近
         function checkMouseProximity (mouseX, mouseY, targetX, targetY, threshold = 10) {
             return Math.sqrt((mouseX - targetX) ** 2 + (mouseY - targetY) ** 2) < threshold;
         }
 
         // 鼠标事件处理: 按下
         canvas.addEventListener('mousedown', (e) => {
-            canvas.style.cursor = 'move';
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -224,7 +439,6 @@ ctx.stroke();
             if (currentPoint === 'start') {
                 startX = x;
                 startY = y;
-
             } else if (currentPoint === 'end') {
                 endX = x;
                 endY = y;
@@ -233,8 +447,10 @@ ctx.stroke();
                 cpy1 = y;
             }
 
-            draw();
-            updateCodeExample(); // 实时更新代码示例
+            // 更新曲线绘制
+            const t = parseFloat(tSlider.value) / 100;
+            draw(t);
+            updateCodeExample();
         });
 
         // 鼠标事件处理: 抬起
@@ -244,8 +460,15 @@ ctx.stroke();
             canvas.style.cursor = 'default';
         });
 
+        // 滑块事件处理
+        tSlider.addEventListener('input', () => {
+            const t = parseFloat(tSlider.value) / 100;
+            tDisplay.textContent = `t = ${t.toFixed(2)}`;
+            draw(t);
+        });
+
         // 初始绘制
-        draw();
+        draw(0);
         updateCodeExample();
     </script>
 </body>
