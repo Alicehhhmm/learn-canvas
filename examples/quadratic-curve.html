@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二次贝塞尔曲线交互示例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .header span {
+            color: gray;
+        }
+
+        .header p {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+
+        .code-preview {
+            flex: 1;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            width: 400px;
+            margin-bottom: 20px;
+            overflow: auto;
+        }
+
+        #codeExample {
+            display: block;
+            width: auto;
+            height: 11em;
+            font-family: monospace;
+            font-size: 1em;
+            padding: 2px 4px;
+            margin: 0;
+            color: #555;
+            background-color: #eee;
+            border: 1px solid #999;
+            overflow: auto;
+        }
+
+        #codeExample span {
+            font-family: Helvetica, sans-serif;
+        }
+
+        .code-description {
+            margin-top: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>二次贝塞尔曲线案例 / <span>Canvas Quadratic Curve </span></h1>
+        <p>拖动蓝色点可以改变起始点和结束点，拖动红色点可以改变控制点位置</p>
+    </div>
+
+    <div class="container">
+        <canvas id="canvas2d" width="600" height="400">
+            您的浏览器不支持Canvas元素
+        </canvas>
+
+        <div class="code-preview">
+            <pre id="codeExample">
+ctx.beginPath();
+ctx.moveTo(<span id="startX">50</span>, <span id="startY">50</span>);
+ctx.quadraticCurveTo(<span id="cpx1">200</span>, <span id="cpy1">200</span>, <span id="endX">300</span>, <span id="endY">50</span>);
+ctx.stroke();
+            </pre>
+            <div class="code-description">
+                <p>
+                    二次贝塞尔曲线 (二次方程曲线): <br>
+                    quadraticCurveTo(cq1x,cq1y,x,y)<br>
+                    - 控制点坐标(cq1x,cq1y)<br>
+                    - 结束点坐标(x,y)</p>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas2d');
+        const ctx = canvas.getContext('2d');
+
+        // 初始化点的位置
+        let startX = 120, startY = 220;
+        let endX = 310, endY = 210;
+        let cpx1 = 190, cpy1 = 90;
+
+        // 拖动状态
+        let isDragging = false;
+        let currentPoint = null;
+
+        // 绘制函数
+        function draw () {
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制控制线
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(cpx1, cpy1);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = '#aaa';
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 绘制贝塞尔曲线
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.quadraticCurveTo(cpx1, cpy1, endX, endY);
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 绘制起始点和结束点
+            ctx.fillStyle = 'blue';
+            ctx.beginPath();
+            ctx.arc(startX, startY, 6, 0, Math.PI * 2);
+            ctx.arc(endX, endY, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 绘制控制点
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(cpx1, cpy1, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 绘制文本标签
+            ctx.fillStyle = 'black';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+
+            // 标记 P0
+            ctx.fillText('P0', startX, startY - 10);
+
+            // 标记 P1
+            ctx.fillText('P1', cpx1, cpy1 - 10);
+
+            // 标记 P2
+            ctx.fillText('P2', endX, endY - 10);
+        }
+
+        // 更新代码示例
+        function updateCodeExample () {
+            document.getElementById('startX').textContent = Math.round(startX);
+            document.getElementById('startY').textContent = Math.round(startY);
+            document.getElementById('endX').textContent = Math.round(endX);
+            document.getElementById('endY').textContent = Math.round(endY);
+            document.getElementById('cpx1').textContent = Math.round(cpx1);
+            document.getElementById('cpy1').textContent = Math.round(cpy1);
+        }
+
+        /** 
+         * 算法：两点间的 ​欧几里得距离（直线距离）
+         * @see https://zh.wikipedia.org/wiki/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB
+         * 作用：检查是否点击了某个点
+         * 入参：
+         * - mouseX, mouseY：鼠标当前坐标
+         * - targetX, targetY：目标点坐标
+         * - threshold: 间距阀值
+        */
+        function checkMouseProximity (mouseX, mouseY, targetX, targetY, threshold = 10) {
+            return Math.sqrt((mouseX - targetX) ** 2 + (mouseY - targetY) ** 2) < threshold;
+        }
+
+        // 鼠标事件处理: 按下
+        canvas.addEventListener('mousedown', (e) => {
+            canvas.style.cursor = 'move';
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (checkMouseProximity(x, y, startX, startY)) {
+                currentPoint = 'start';
+            } else if (checkMouseProximity(x, y, endX, endY)) {
+                currentPoint = 'end';
+            } else if (checkMouseProximity(x, y, cpx1, cpy1)) {
+                currentPoint = 'control';
+            } else {
+                return;
+            }
+
+            isDragging = true;
+        });
+
+        // 鼠标事件处理: 移动
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // 更新点的位置
+            if (currentPoint === 'start') {
+                startX = x;
+                startY = y;
+
+            } else if (currentPoint === 'end') {
+                endX = x;
+                endY = y;
+            } else if (currentPoint === 'control') {
+                cpx1 = x;
+                cpy1 = y;
+            }
+
+            draw();
+            updateCodeExample(); // 实时更新代码示例
+        });
+
+        // 鼠标事件处理: 抬起
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            currentPoint = null;
+            canvas.style.cursor = 'default';
+        });
+
+        // 初始绘制
+        draw();
+        updateCodeExample();
+    </script>
+</body>
+
+</html>
