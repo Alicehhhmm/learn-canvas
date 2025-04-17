@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Path API - quadraticCurveTo</title>
+    <style>
+        canvas {
+            border: 1px solid goldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas2d" width="400" height="300">
+        The current browser does not support canvas
+    </canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas2d')
+
+        if (canvas.getContext) {
+            var ctx = canvas.getContext("2d");
+
+            // 二次方程曲线，又称：二次贝塞尔曲线
+            // quadraticCurveTo(cq1x,cq1y,x,y)
+            // 控制点坐标(cq1x,cq1y)
+            // 结束点坐标(x,y)
+
+            // 如下二次贝塞尔曲线案例
+            // 为了可视化控制点与结束点坐标，将通过arc来绘制这两个点
+
+            // 起点坐标变量
+            let startX = 50, startY = 50
+
+            // 结束点坐标变量
+            let endX = 300, endY = 50
+
+            // 控制点坐标变量
+            let cpx1 = 200, cpy1 = 200
+
+            // 二次贝塞尔曲线
+            ctx.beginPath()
+            ctx.moveTo(startX, startY)
+            ctx.quadraticCurveTo(cpx1, cpy1, endX, endY);
+            ctx.stroke();
+
+            // 起始点和结束点
+            ctx.fillStyle = "blue";
+            ctx.beginPath();
+            ctx.arc(startX, startY, 5, 0, 2 * Math.PI); // 起始点
+            ctx.arc(endX, endY, 5, 0, 2 * Math.PI); // 结束点
+            ctx.fill();
+
+            // 控制点
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(cpx1, cpy1, 5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    </script>
+</body>
+
+</html>
