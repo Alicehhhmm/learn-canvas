@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分段三次贝塞尔曲线案例 / Piecewise Bézier Curves</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --text-color: #444;
+            --code-bg: #f8f9fa;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #95a5a6;
+            --panel-bg: #fff;
+            --panel-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0 20px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header span {
+            color: gray;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .header p {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .main-content {
+            display: flex;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .canvas-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            border-radius: 4px;
+            border: 1px solid var(--medium-gray);
+            background-color: white;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .controls {
+            width: 100%;
+            background-color: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--panel-shadow);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .slider-container label {
+            min-width: 80px;
+        }
+
+        .point-labels {
+            background-color: var(--panel-bg);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .point-labels p {
+            margin: 5px 0;
+        }
+
+        .toggle-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .code-container {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+
+        .code-preview {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 0 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 0;
+            margin-bottom: 20px;
+            white-space: pre;
+            overflow: auto;
+        }
+
+        .code-description {
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .description-row {
+            font-size: 14px;
+            color: #555;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .subscript {
+            vertical-align: sub;
+            font-size: 0.8em;
+        }
+
+        .superscript {
+            vertical-align: super;
+            font-size: 0.8em;
+        }
+
+        .formula-values {
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .draggable-panel {
+            position: absolute;
+            background-color: var(--panel-bg);
+            border-radius: 8px;
+            box-shadow: var(--panel-shadow);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 12px 15px;
+            background-color: var(--medium-gray);
+            cursor: move;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-closer {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        .panel-content {
+            padding: 15px;
+        }
+
+        .color-box {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .blue {
+            background-color: var(--primary-color);
+        }
+
+        .red {
+            background-color: var(--accent-color);
+        }
+
+        .green {
+            background-color: #27ae60;
+        }
+
+        .orange {
+            background-color: #f39c12;
+        }
+
+        .black {
+            background-color: #000;
+        }
+
+        .point-tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--medium-gray);
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+
+        .repo-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .canvas-container {
+                width: 100%;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .draggable-panel {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        #q0x,
+        #q0y,
+        #q1x,
+        #q1y,
+        #q2x,
+        #q2y,
+        #q3x,
+        #q3y,
+        #q4x,
+        #q4y,
+        #q5x,
+        #q5y,
+        #q6x,
+        #q6y,
+        #q7x,
+        #q7y,
+        #q8x,
+        #q8y {
+            color: green;
+        }
+
+        #r0x,
+        #r0y,
+        #r1x,
+        #r1y,
+        #r2x,
+        #r2y,
+        #r3x,
+        #r3y,
+        #r4x,
+        #r4y,
+        #r5x,
+        #r5y {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>分段三次贝塞尔曲线案例 / <span>Piecewise Bézier Curves</span></h1>
+            <p>拖动蓝色端点和红色控制点可调整曲线形状，使用滑块控制参数 t 的值</p>
+        </header>
+
+        <div class="main-content">
+            <div class="canvas-container">
+                <canvas id="canvas2d" width="1000" height="400"></canvas>
+
+                <div class="slider-container">
+                    <span>参数 t 值:</span>
+                    <input type="range" id="t-value" min="0" max="100" value="0" step="1">
+                    <span id="t-display">t = 0.00</span>
+                </div>
+
+                <div class="toggle-container">
+                    <div class="toggle-group">
+                        <input type="checkbox" id="toggle-curves" checked>
+                        <label for="toggle-curves">显示曲线</label>
+                    </div>
+                    <div class="toggle-group">
+                        <input type="checkbox" id="toggle-controls" checked>
+                        <label for="toggle-controls">显示控制点</label>
+                    </div>
+                    <div class="toggle-group">
+                        <input type="checkbox" id="toggle-intermediates" checked>
+                        <label for="toggle-intermediates">显示中介线</label>
+                    </div>
+                    <div class="toggle-group">
+                        <input type="checkbox" id="toggle-labels" checked>
+                        <label for="toggle-labels">显示标签</label>
+                    </div>
+                </div>
+
+                <div class="point-labels">
+                    <p>
+                        <span class="color-box blue"></span> 蓝色：端点 P0、P3、P6、P9
+                        <span class="color-box red"></span> 红色：控制点 P1、P2、P4、P5、P7、P8
+                        <span class="color-box green"></span> 绿色：中介点 Q0-Q8
+                        <span class="color-box orange"></span> 橙色：中介点 R0-R5
+                        <span class="color-box black"></span> 黑色：某分段的点 B(t)
+                    </p>
+                </div>
+
+                <div class="description-row">
+                    <div>
+                        <h4>分段三次贝塞尔曲线相关知识点:</h4>
+                        由于高阶贝塞尔曲线存在控制点过多、难以精准调整的问题。<br>
+                        实际应用中通常将其拆分为多个低阶贝塞尔曲线段进行拼接，以提升操作性和控制精度。<br>
+                        <p>
+                            分段三次贝塞尔曲线由多个三次贝塞尔曲线段连接而成： <br>
+                            - 每段贝塞尔曲线有四个点：起始点、两个控制点和结束点 <br>
+                            - 曲线的形状由两个控制点决定，曲线不会经过控制点，但始终会朝着控制点的方向弯曲。<br>
+                            - 贝塞尔曲线段之间通过分切点相连，形成连续的曲线 <br>
+                            - 当分切点控制线形成直角时，曲线会在该点处形成直角。例如（P2-P3-P4）<br>
+                            - 相反，当分切点控制线端点在同一直线上，曲线会在该点处形成平滑的连接。例如（P5-P6-P7）<br>
+                        </p>
+                        <p>
+                            每段三次贝塞尔曲线的参数方程为：<br>
+                            <br>
+                            <span class="formula">
+                                <span class="bold">B</span><sub>i</sub>(t) =
+                                (1 - t)<span class="superscript">3</span>
+                                <span class="bold">P</span><sub>i0</sub> +
+                                3t(1 - t)<span class="superscript">2</span>
+                                <span class="bold">P</span><sub>i1</sub> +
+                                3t<span class="superscript">2</span>(1 - t)
+                                <span class="bold">P</span><sub>i2</sub> +
+                                t<span class="superscript">3</span>
+                                <span class="bold">P</span><sub>i3</sub>
+                                <span style="margin-left: 1em;">（t ∈ [0, 1]）</span>
+                            </span><br>
+                            <br>
+                            其中 ( t ) 表示在曲线轨迹上移动的进度参数，取值范围为[0, 1]区间。<br>
+                            <br>
+                            <span>t值进展图：|—t—|——(1-t)——| </span>
+                        </p>
+                    </div>
+                    <div>
+                        <h4>中介点计算公式:</h4>
+                        <span class="formula">
+                            <span class="bold">B</span>(t) =(1 - t)<span class="bold">P</span><sub>0</sub> +
+                            t<span class="bold">P</span><sub>1</sub>
+                            <span style="margin-left: 1em;">（t ∈ [0, 1]）</span>
+                        </span><br>
+                        <p>
+                            <i>第一段的中介点</i><br>
+                            Q0 = P0 + t * (P1 - P0)<br>
+                            Q1 = P1 + t * (P2 - P1)<br>
+                            Q2 = P2 + t * (P3 - P2)<br>
+                            R0 = Q0 + t * (Q1 - Q0)<br>
+                            R1 = Q1 + t * (Q2 - Q1)<br>
+                            B1(t) = R0 + t * (R1 - R0)
+                        </p>
+                        <p>
+                            <i>第二段的中介点</i><br>
+                            Q3 = P3 + t * (P4 - P3)<br>
+                            Q4 = P4 + t * (P5 - P4)<br>
+                            Q5 = P5 + t * (P6 - P5)<br>
+                            R2 = Q3 + t * (Q4 - Q3)<br>
+                            R3 = Q4 + t * (Q5 - Q4)<br>
+                            B2(t) = R2 + t * (R3 - R2)
+                        </p>
+                        <i>第三段的中介点</i><br>
+                        Q6 = P6 + t * (P7 - P6)<br>
+                        Q7 = P7 + t * (P8 - P7)<br>
+                        Q8 = P8 + t * (P9 - P8)<br>
+                        R4 = Q6 + t * (Q7 - Q6)<br>
+                        R5 = Q7 + t * (Q8 - Q7)<br>
+                        B3(t) = R4 + t * (R5 - R4)
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-container">
+                <pre class="code-preview" id="codeExample">
+// 第一段贝塞尔曲线
+ctx.beginPath();
+ctx.moveTo(<span id="startX1">70</span>, <span id="startY1">210</span>);
+ctx.bezierCurveTo(
+    <span id="cpx11">50</span>, <span id="cpy11">60</span>,
+    <span id="cpx21">225</span>, <span id="cpy21">60</span>,
+    <span id="endX1">330</span>, <span id="endY1">225</span>
+);
+ctx.stroke();
+
+// 第二段贝塞尔曲线
+ctx.beginPath();
+ctx.moveTo(<span id="startX2">330</span>, <span id="startY2">225</span>);
+ctx.bezierCurveTo(
+    <span id="cpx12">170</span>, <span id="cpy12">300</span>,
+    <span id="cpx22">370</span>, <span id="cpy22">330</span>,
+    <span id="endX2">560</span>, <span id="endY2">210</span>
+);
+ctx.stroke();
+
+// 第三段贝塞尔曲线
+ctx.beginPath();
+ctx.moveTo(<span id="startX3">560</span>, <span id="startY3">210</span>);
+ctx.bezierCurveTo(
+    <span id="cpx13">730</span>, <span id="cpy13">110</span>,
+    <span id="cpx23">840</span>, <span id="cpy23">260</span>,
+    <span id="endX3">740</span>, <span id="endY3">250</span>
+);
+ctx.stroke();
+                </pre>
+
+                <div class="code-description">
+                    <div>
+                        <h4>Canvas中的三次bezierCurveTo语法:</h4>
+                        <p>
+                            bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)<br>
+                            - 起始点：通过 `moveTo()` 方法设置<br>
+                            - 第一个控制点坐标：(cp1x, cp1y)<br>
+                            - 第二个控制点坐标：(cp2x, cp2y)<br>
+                            - 结束点坐标：(x, y)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <a href="https://github.com/Alicehhhmm/learn-canvas/blob/main/examples/bezier-curve.html" class="repo-link"
+                target="_blank">
+                <svg class="repo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="#555">
+                    <path
+                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                </svg>
+            </a>
+            <p>&copy; 2025 Norush. </p>
+        </div>
+    </div>
+
+    <div class="point-tooltip" id="point-tooltip"></div>
+
+    <script>
+        // 可拖动面板组件
+        class DraggablePanel {
+            constructor(title, contentHTML, initialX = 20, initialY = 100, width = 300) {
+                this.title = title;
+                this.contentHTML = contentHTML;
+                this.initialX = initialX;
+                this.initialY = initialY;
+                this.width = width;
+                this.panelElement = null;
+                this.headerElement = null;
+                this.isDragging = false;
+                this.offsetX = 0;
+                this.offsetY = 0;
+
+                this.createPanel();
+                this.setupEventListeners();
+            }
+
+            createPanel () {
+                this.panelElement = document.createElement('div');
+                this.panelElement.className = 'draggable-panel';
+                this.panelElement.style.width = this.width + 'px';
+                this.panelElement.style.right = this.initialX + 'px';
+                this.panelElement.style.top = this.initialY + 'px';
+
+                this.headerElement = document.createElement('div');
+                this.headerElement.className = 'panel-header';
+                this.headerElement.textContent = this.title;
+
+                const closeButton = document.createElement('button');
+                closeButton.className = 'panel-closer';
+                closeButton.innerHTML = '&times;';
+                closeButton.addEventListener('click', () => {
+                    if (this.panelElement.style.display === 'none') {
+                        this.panelElement.style.display = 'block';
+                        closeButton.innerHTML = '&times;';
+                    } else {
+                        this.panelElement.style.display = 'none';
+                        closeButton.innerHTML = '+';
+                    }
+                });
+
+                this.headerElement.appendChild(closeButton);
+
+                const contentElement = document.createElement('div');
+                contentElement.className = 'panel-content';
+                contentElement.innerHTML = this.contentHTML;
+
+                this.panelElement.appendChild(this.headerElement);
+                this.panelElement.appendChild(contentElement);
+
+                document.body.appendChild(this.panelElement);
+            }
+
+            setupEventListeners () {
+                this.headerElement.addEventListener('mousedown', (e) => {
+                    if (e.target.className === 'panel-closer') return;
+
+                    this.isDragging = true;
+                    this.offsetX = e.clientX - this.panelElement.offsetLeft;
+                    this.offsetY = e.clientY - this.panelElement.offsetTop;
+                    this.panelElement.style.zIndex = '1001';
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!this.isDragging) return;
+
+                    const newX = e.clientX - this.offsetX;
+                    const newY = e.clientY - this.offsetY;
+
+                    this.panelElement.style.left = newX + 'px';
+                    this.panelElement.style.top = newY + 'px';
+                });
+
+                document.addEventListener('mouseup', () => {
+                    this.isDragging = false;
+                    this.panelElement.style.zIndex = '1000';
+                });
+            }
+
+            updateContent (newContentHTML) {
+                if (this.panelElement && this.panelElement.querySelector('.panel-content')) {
+                    this.panelElement.querySelector('.panel-content').innerHTML = newContentHTML;
+                }
+            }
+
+            setTitle (newTitle) {
+                if (this.headerElement) {
+                    this.headerElement.firstChild.textContent = newTitle;
+                }
+            }
+
+            setPosition (x, y) {
+                if (this.panelElement) {
+                    this.panelElement.style.left = x + 'px';
+                    this.panelElement.style.top = y + 'px';
+                }
+            }
+        }
+
+        // 创建可拖动面板
+        const panelContent = `
+            <div class="formula-row">
+                <div>
+                    <h4>中介点公式数值:</h4>
+                    <p>Q0: (<span id="q0x">0</span>, <span id="q0y">0</span>)</p>
+                    <p>Q1: (<span id="q1x">0</span>, <span id="q1y">0</span>)</p>
+                    <p>Q2: (<span id="q2x">0</span>, <span id="q2y">0</span>)</p>
+                    <p>Q3: (<span id="q3x">0</span>, <span id="q3y">0</span>)</p>
+                    <p>Q4: (<span id="q4x">0</span>, <span id="q4y">0</span>)</p>
+                    <p>Q5: (<span id="q5x">0</span>, <span id="q5y">0</span>)</p>
+                    <p>Q6: (<span id="q6x">0</span>, <span id="q6y">0</span>)</p>
+                    <p>Q7: (<span id="q7x">0</span>, <span id="q7y">0</span>)</p>
+                    <p>Q8: (<span id="q8x">0</span>, <span id="q8y">0</span>)</p>
+
+                    <p>R0: (<span id="r0x">0</span>, <span id="r0y">0</span>)</p>
+                    <p>R1: (<span id="r1x">0</span>, <span id="r1y">0</span>)</p>
+                    <p>R2: (<span id="r2x">0</span>, <span id="r2y">0</span>)</p>
+                    <p>R3: (<span id="r3x">0</span>, <span id="r3y">0</span>)</p>
+                    <p>R4: (<span id="r4x">0</span>, <span id="r4y">0</span>)</p>
+                    <p>R5: (<span id="r5x">0</span>, <span id="r5y">0</span>)</p>
+
+                    <p>B1(t): (<span id="bt1x">0</span>, <span id="bt1y">0</span>)</p>
+                    <p>B2(t): (<span id="bt2x">0</span>, <span id="bt2y">0</span>)</p>
+                    <p>B3(t): (<span id="bt3x">0</span>, <span id="bt3y">0</span>)</p>
+                </div>
+            </div>
+        `;
+
+        new DraggablePanel('实时参数面板（可拖动）', panelContent, 20, 100, 300);
+
+        // 三次贝塞尔曲线绘制逻辑
+        const canvas = document.getElementById('canvas2d');
+        const ctx = canvas.getContext('2d');
+        const tSlider = document.getElementById('t-value');
+        const tDisplay = document.getElementById('t-display');
+        const toggleCurves = document.getElementById('toggle-curves');
+        const toggleControls = document.getElementById('toggle-controls');
+        const toggleIntermediates = document.getElementById('toggle-intermediates');
+        const toggleLabels = document.getElementById('toggle-labels');
+
+        // 初始化各段曲线的点的位置
+        // 第一段贝塞尔曲线
+        let p0 = { x: 70, y: 210 };
+        let p1 = { x: 50, y: 60 };
+        let p2 = { x: 225, y: 60 };
+        let p3 = { x: 330, y: 225 };
+
+        // 第二段贝塞尔曲线
+        let p4 = { x: 170, y: 300 };
+        let p5 = { x: 370, y: 330 };
+        let p6 = { x: 560, y: 210 };
+
+        // 第三段贝塞尔曲线
+        let p7 = { x: 730, y: 110 };
+        let p8 = { x: 840, y: 260 };
+        let p9 = { x: 740, y: 250 };
+
+        // 拖动状态
+        let isDragging = false;
+        let currentPoint = null;
+
+        // 确保点始终在画布可视范围内
+        function keepPointInCanvas (point) {
+            const margin = 10;
+            point.x = Math.max(margin, Math.min(canvas.width - margin, point.x));
+            point.y = Math.max(margin, Math.min(canvas.height - margin, point.y));
+        }
+
+        // 绘制函数
+        function draw (t) {
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 计算中介点 Q0-Q8
+            const q0x = p0.x + t * (p1.x - p0.x);
+            const q0y = p0.y + t * (p1.y - p0.y);
+            const q1x = p1.x + t * (p2.x - p1.x);
+            const q1y = p1.y + t * (p2.y - p1.y);
+            const q2x = p2.x + t * (p3.x - p2.x);
+            const q2y = p2.y + t * (p3.y - p2.y);
+
+            const q3x = p3.x + t * (p4.x - p3.x);
+            const q3y = p3.y + t * (p4.y - p3.y);
+            const q4x = p4.x + t * (p5.x - p4.x);
+            const q4y = p4.y + t * (p5.y - p4.y);
+            const q5x = p5.x + t * (p6.x - p5.x);
+            const q5y = p5.y + t * (p6.y - p5.y);
+
+            const q6x = p6.x + t * (p7.x - p6.x);
+            const q6y = p6.y + t * (p7.y - p6.y);
+            const q7x = p7.x + t * (p8.x - p7.x);
+            const q7y = p7.y + t * (p8.y - p7.y);
+            const q8x = p8.x + t * (p9.x - p8.x);
+            const q8y = p8.y + t * (p9.y - p8.y);
+
+            // 计算中介点 R0-R5
+            const r0x = q0x + t * (q1x - q0x);
+            const r0y = q0y + t * (q1y - q0y);
+            const r1x = q1x + t * (q2x - q1x);
+            const r1y = q1y + t * (q2y - q1y);
+
+            const r2x = q3x + t * (q4x - q3x);
+            const r2y = q3y + t * (q4y - q3y);
+            const r3x = q4x + t * (q5x - q4x);
+            const r3y = q4y + t * (q5y - q4y);
+
+            const r4x = q6x + t * (q7x - q6x);
+            const r4y = q6y + t * (q7y - q6y);
+            const r5x = q7x + t * (q8x - q7x);
+            const r5y = q7y + t * (q8y - q7y);
+
+            // 计算当前点 B(t)
+            const bt1X = r0x + t * (r1x - r0x);
+            const bt1Y = r0y + t * (r1y - r0y);
+
+            const bt2X = r2x + t * (r3x - r2x);
+            const bt2Y = r2y + t * (r3y - r2y);
+
+            const bt3X = r4x + t * (r5x - r4x);
+            const bt3Y = r4y + t * (r5y - r4y);
+
+            // 更新公式数值显示
+            updateFormulaValue(
+                q0x, q0y, q1x, q1y, q2x, q2y,
+                q3x, q3y, q4x, q4y, q5x, q5y,
+                q6x, q6y, q7x, q7y, q8x, q8y,
+                r0x, r0y, r1x, r1y, r2x, r2y,
+                r3x, r3y, r4x, r4y, r5x, r5y,
+                bt1X, bt1Y, bt2X, bt2Y, bt3X, bt3Y
+            );
+
+            // 绘制控制线
+            if (toggleControls.checked) {
+                ctx.strokeStyle = '#aaa';
+                ctx.lineWidth = 2;
+
+                // p0-p1
+                ctx.beginPath();
+                ctx.moveTo(p0.x, p0.y);
+                ctx.lineTo(p1.x, p1.y);
+                ctx.stroke();
+                ctx.closePath();
+
+                // p2-p3
+                ctx.beginPath();
+                ctx.moveTo(p2.x, p2.y);
+                ctx.lineTo(p3.x, p3.y);
+                ctx.stroke();
+                ctx.closePath();
+
+                // p3-p4
+                ctx.beginPath();
+                ctx.moveTo(p3.x, p3.y);
+                ctx.lineTo(p4.x, p4.y);
+                ctx.stroke();
+                ctx.closePath();
+
+                // p4-p6
+                ctx.beginPath();
+                ctx.moveTo(p5.x, p5.y);
+                ctx.lineTo(p6.x, p6.y);
+                ctx.stroke();
+                ctx.closePath();
+
+                // p6-p7
+                ctx.beginPath();
+                ctx.moveTo(p6.x, p6.y);
+                ctx.lineTo(p7.x, p7.y);
+                ctx.stroke();
+                ctx.closePath();
+
+                // p7-p8
+                ctx.beginPath();
+                ctx.moveTo(p8.x, p8.y);
+                ctx.lineTo(p9.x, p9.y);
+                ctx.stroke();
+                ctx.closePath();
+            }
+
+            // 绘制中介线
+            if (toggleIntermediates.checked) {
+                ctx.lineWidth = 1;
+
+                ctx.beginPath();
+                ctx.moveTo(p0.x, p0.y);
+                ctx.lineTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.lineTo(p3.x, p3.y);
+                ctx.lineTo(p4.x, p4.y);
+                ctx.lineTo(p5.x, p5.y);
+                ctx.lineTo(p6.x, p6.y);
+                ctx.lineTo(p7.x, p7.y);
+                ctx.lineTo(p8.x, p8.y);
+                ctx.lineTo(p9.x, p9.y);
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#aaa';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 第一段的中介线
+                ctx.beginPath();
+                ctx.moveTo(p0.x, p0.y);
+                ctx.lineTo(q0x, q0y);
+                ctx.strokeStyle = '#888';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(q1x, q1y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p2.x, p2.y);
+                ctx.lineTo(q2x, q2y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(q0x, q0y);
+                ctx.lineTo(q1x, q1y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(q1x, q1y);
+                ctx.lineTo(q2x, q2y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(r0x, r0y);
+                ctx.lineTo(r1x, r1y);
+                ctx.strokeStyle = '#f39c12';
+                ctx.stroke();
+
+                // 第二段的中介线
+                ctx.beginPath();
+                ctx.moveTo(p3.x, p3.y);
+                ctx.lineTo(q3x, q3y);
+                ctx.strokeStyle = '#888';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p4.x, p4.y);
+                ctx.lineTo(q4x, q4y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p5.x, p5.y);
+                ctx.lineTo(q5x, q5y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(q3x, q3y);
+                ctx.lineTo(q4x, q4y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(q4x, q4y);
+                ctx.lineTo(q5x, q5y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(r2x, r2y);
+                ctx.lineTo(r3x, r3y);
+                ctx.strokeStyle = '#f39c12';
+                ctx.stroke();
+
+                // 第三段的中介线
+                ctx.beginPath();
+                ctx.moveTo(p6.x, p6.y);
+                ctx.lineTo(q6x, q6y);
+                ctx.strokeStyle = '#888';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p7.x, p7.y);
+                ctx.lineTo(q7x, q7y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p8.x, p8.y);
+                ctx.lineTo(q8x, q8y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(q6x, q6y);
+                ctx.lineTo(q7x, q7y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(q7x, q7y);
+                ctx.lineTo(q8x, q8y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(r4x, r4y);
+                ctx.lineTo(r5x, r5y);
+                ctx.strokeStyle = '#f39c12';
+                ctx.stroke();
+            }
+
+            // 绘制贝塞尔曲线
+            if (toggleCurves.checked) {
+                ctx.lineWidth = 4;
+                // 绘制第一段贝塞尔曲线
+                ctx.beginPath();
+                ctx.moveTo(p0.x, p0.y);
+                ctx.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+                ctx.strokeStyle = '#3498db';
+                ctx.stroke();
+
+                // 绘制第二段贝塞尔曲线
+                ctx.beginPath();
+                ctx.moveTo(p3.x, p3.y);
+                ctx.bezierCurveTo(p4.x, p4.y, p5.x, p5.y, p6.x, p6.y);
+                ctx.strokeStyle = '#2ecc71';
+                ctx.stroke();
+
+                // 绘制第三段贝塞尔曲线
+                ctx.beginPath();
+                ctx.moveTo(p6.x, p6.y);
+                ctx.bezierCurveTo(p7.x, p7.y, p8.x, p8.y, p9.x, p9.y);
+                ctx.strokeStyle = '#e74c3c';
+                ctx.stroke();
+            }
+
+            // 绘制中介点和控制点
+            if (toggleControls.checked || toggleIntermediates.checked) {
+                // 绘制中介点
+                ctx.fillStyle = '#27ae60';
+                drawPoint(q0x, q0y);
+                drawPoint(q1x, q1y);
+                drawPoint(q2x, q2y);
+                drawPoint(q3x, q3y);
+                drawPoint(q4x, q4y);
+                drawPoint(q5x, q5y);
+                drawPoint(q6x, q6y);
+                drawPoint(q7x, q7y);
+                drawPoint(q8x, q8y);
+
+                // 绘制 R 中介点
+                ctx.fillStyle = '#f39c12';
+                drawPoint(r0x, r0y);
+                drawPoint(r1x, r1y);
+                drawPoint(r2x, r2y);
+                drawPoint(r3x, r3y);
+                drawPoint(r4x, r4y);
+                drawPoint(r5x, r5y);
+
+                // 绘制当前点
+                ctx.fillStyle = '#000';
+                drawPoint(bt1X, bt1Y);
+                drawPoint(bt2X, bt2Y);
+                drawPoint(bt3X, bt3Y);
+            }
+
+            // 绘制端点
+            ctx.fillStyle = '#3498db';
+            drawPoint(p0.x, p0.y);
+            drawPoint(p3.x, p3.y);
+            drawPoint(p6.x, p6.y);
+            drawPoint(p9.x, p9.y);
+
+            // 控制点显示隐藏
+            if (toggleControls.checked) {
+                // 绘制控制点
+                ctx.fillStyle = '#e74c3c';
+                drawPoint(p1.x, p1.y);
+                drawPoint(p2.x, p2.y);
+                drawPoint(p4.x, p4.y);
+                drawPoint(p5.x, p5.y);
+                drawPoint(p7.x, p7.y);
+                drawPoint(p8.x, p8.y);
+            }
+
+            // 绘制文本标签
+            if (toggleLabels.checked) {
+                ctx.fillStyle = 'black';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+
+                // 标记端点
+                ctx.fillText('P0', p0.x, p0.y - 10);
+                ctx.fillText('P3', p3.x, p3.y - 10);
+                ctx.fillText('P6', p6.x, p6.y - 10);
+                ctx.fillText('P9', p9.x, p9.y - 10);
+
+                // 标记控制点
+                ctx.fillText('P1', p1.x, p1.y - 10);
+                ctx.fillText('P2', p2.x, p2.y - 10);
+                ctx.fillText('P4', p4.x, p4.y - 10);
+                ctx.fillText('P5', p5.x, p5.y - 10);
+                ctx.fillText('P7', p7.x, p7.y - 10);
+                ctx.fillText('P8', p8.x, p8.y - 10);
+
+                // 标记中介点
+                ctx.fillText('Q0', q0x, q0y - 10);
+                ctx.fillText('Q1', q1x, q1y - 10);
+                ctx.fillText('Q2', q2x, q2y - 10);
+                ctx.fillText('Q3', q3x, q3y - 10);
+                ctx.fillText('Q4', q4x, q4y - 10);
+                ctx.fillText('Q5', q5x, q5y - 10);
+                ctx.fillText('Q6', q6x, q6y - 10);
+                ctx.fillText('Q7', q7x, q7y - 10);
+                ctx.fillText('Q8', q8x, q8y - 10);
+
+                // 标记 R 中介点
+                ctx.fillText('R0', r0x, r0y - 10);
+                ctx.fillText('R1', r1x, r1y - 10);
+                ctx.fillText('R2', r2x, r2y - 10);
+                ctx.fillText('R3', r3x, r3y - 10);
+                ctx.fillText('R4', r4x, r4y - 10);
+                ctx.fillText('R5', r5x, r5y - 10);
+
+                // 标记当前点
+                ctx.fillText('B1(t)', bt1X, bt1Y + 20);
+                ctx.fillText('B2(t)', bt2X, bt2Y + 20);
+                ctx.fillText('B3(t)', bt3X, bt3Y + 20);
+            }
+        }
+
+        // 绘制点
+        function drawPoint (x, y, size = 6) {
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 更新代码示例
+        function updateCodeExample () {
+            // 更新第一段贝塞尔曲线的代码
+            document.getElementById('startX1').textContent = Math.round(p0.x);
+            document.getElementById('startY1').textContent = Math.round(p0.y);
+            document.getElementById('cpx11').textContent = Math.round(p1.x);
+            document.getElementById('cpy11').textContent = Math.round(p1.y);
+            document.getElementById('cpx21').textContent = Math.round(p2.x);
+            document.getElementById('cpy21').textContent = Math.round(p2.y);
+            document.getElementById('endX1').textContent = Math.round(p3.x);
+            document.getElementById('endY1').textContent = Math.round(p3.y);
+
+            // 更新第二段贝塞尔曲线的代码
+            document.getElementById('startX2').textContent = Math.round(p3.x);
+            document.getElementById('startY2').textContent = Math.round(p3.y);
+            document.getElementById('cpx12').textContent = Math.round(p4.x);
+            document.getElementById('cpy12').textContent = Math.round(p4.y);
+            document.getElementById('cpx22').textContent = Math.round(p5.x);
+            document.getElementById('cpy22').textContent = Math.round(p5.y);
+            document.getElementById('endX2').textContent = Math.round(p6.x);
+            document.getElementById('endY2').textContent = Math.round(p6.y);
+
+            // 更新第三段贝塞尔曲线的代码
+            document.getElementById('startX3').textContent = Math.round(p6.x);
+            document.getElementById('startY3').textContent = Math.round(p6.y);
+            document.getElementById('cpx13').textContent = Math.round(p7.x);
+            document.getElementById('cpy13').textContent = Math.round(p7.y);
+            document.getElementById('cpx23').textContent = Math.round(p8.x);
+            document.getElementById('cpy23').textContent = Math.round(p8.y);
+            document.getElementById('endX3').textContent = Math.round(p9.x);
+            document.getElementById('endY3').textContent = Math.round(p9.y);
+        }
+
+        // 更新公式数值显示
+        function updateFormulaValue (
+            q0x, q0y, q1x, q1y, q2x, q2y,
+            q3x, q3y, q4x, q4y, q5x, q5y,
+            q6x, q6y, q7x, q7y, q8x, q8y,
+            r0x, r0y, r1x, r1y, r2x, r2y,
+            r3x, r3y, r4x, r4y, r5x, r5y,
+            bt1X, bt1Y, bt2X, bt2Y, bt3X, bt3Y
+        ) {
+            // 第一段贝塞尔曲线
+            document.getElementById('q0x').textContent = Math.round(q0x);
+            document.getElementById('q0y').textContent = Math.round(q0y);
+            document.getElementById('q1x').textContent = Math.round(q1x);
+            document.getElementById('q1y').textContent = Math.round(q1y);
+            document.getElementById('q2x').textContent = Math.round(q2x);
+            document.getElementById('q2y').textContent = Math.round(q2y);
+
+            document.getElementById('r0x').textContent = Math.round(r0x);
+            document.getElementById('r0y').textContent = Math.round(r0y);
+            document.getElementById('r1x').textContent = Math.round(r1x);
+            document.getElementById('r1y').textContent = Math.round(r1y);
+
+            document.getElementById('bt1x').textContent = Math.round(bt1X);
+            document.getElementById('bt1y').textContent = Math.round(bt1Y);
+
+            // 第二段贝塞尔曲线
+            document.getElementById('q3x').textContent = Math.round(q3x);
+            document.getElementById('q3y').textContent = Math.round(q3y);
+            document.getElementById('q4x').textContent = Math.round(q4x);
+            document.getElementById('q4y').textContent = Math.round(q4y);
+            document.getElementById('q5x').textContent = Math.round(q5x);
+            document.getElementById('q5y').textContent = Math.round(q5y);
+
+            document.getElementById('r2x').textContent = Math.round(r2x);
+            document.getElementById('r2y').textContent = Math.round(r2y);
+            document.getElementById('r3x').textContent = Math.round(r3x);
+            document.getElementById('r3y').textContent = Math.round(r3y);
+
+            document.getElementById('bt2x').textContent = Math.round(bt2X);
+            document.getElementById('bt2y').textContent = Math.round(bt2Y);
+
+            // 第三段贝塞尔曲线
+            document.getElementById('q6x').textContent = Math.round(q6x);
+            document.getElementById('q6y').textContent = Math.round(q6y);
+            document.getElementById('q7x').textContent = Math.round(q7x);
+            document.getElementById('q7y').textContent = Math.round(q7y);
+            document.getElementById('q8x').textContent = Math.round(q8x);
+            document.getElementById('q8y').textContent = Math.round(q8y);
+
+            document.getElementById('r4x').textContent = Math.round(r4x);
+            document.getElementById('r4y').textContent = Math.round(r4y);
+            document.getElementById('r5x').textContent = Math.round(r5x);
+            document.getElementById('r5y').textContent = Math.round(r5y);
+
+            document.getElementById('bt3x').textContent = Math.round(bt3X);
+            document.getElementById('bt3y').textContent = Math.round(bt3Y);
+        }
+
+        // 检查鼠标是否在某个点附近
+        function checkMouseProximity (mouseX, mouseY, targetX, targetY, threshold = 10) {
+            return Math.sqrt((mouseX - targetX) ** 2 + (mouseY - targetY) ** 2) < threshold;
+        }
+
+        // 鼠标事件处理: 按下
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // 检查是否点击了某个点
+            if (checkMouseProximity(x, y, p0.x, p0.y)) currentPoint = p0;
+            else if (checkMouseProximity(x, y, p1.x, p1.y)) currentPoint = p1;
+            else if (checkMouseProximity(x, y, p2.x, p2.y)) currentPoint = p2;
+            else if (checkMouseProximity(x, y, p3.x, p3.y)) currentPoint = p3;
+            else if (checkMouseProximity(x, y, p4.x, p4.y)) currentPoint = p4;
+            else if (checkMouseProximity(x, y, p5.x, p5.y)) currentPoint = p5;
+            else if (checkMouseProximity(x, y, p6.x, p6.y)) currentPoint = p6;
+            else if (checkMouseProximity(x, y, p7.x, p7.y)) currentPoint = p7;
+            else if (checkMouseProximity(x, y, p8.x, p8.y)) currentPoint = p8;
+            else if (checkMouseProximity(x, y, p9.x, p9.y)) currentPoint = p9;
+            else return;
+
+            isDragging = true;
+        });
+
+        // 鼠标事件处理: 移动
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // 更新点的位置
+            currentPoint.x = x;
+            currentPoint.y = y;
+
+            // 确保点在画布可视范围内
+            keepPointInCanvas(currentPoint);
+
+            // 更新曲线绘制
+            const t = parseFloat(tSlider.value) / 100;
+            draw(t);
+            updateCodeExample();
+        });
+
+        // 鼠标事件处理: 抬起
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            currentPoint = null;
+            canvas.style.cursor = 'default';
+        });
+
+        // 鼠标事件处理: 离开
+        canvas.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                currentPoint = null;
+                canvas.style.cursor = 'default';
+            }
+        });
+
+        // 鼠标悬停显示坐标提示
+        const pointTooltip = document.getElementById('point-tooltip');
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // 检查鼠标是否悬停在某个点上
+            let pointName = '';
+            let pointX = 0;
+            let pointY = 0;
+
+            if (checkMouseProximity(x, y, p0.x, p0.y)) { pointName = 'P0'; pointX = p0.x; pointY = p0.y; }
+            else if (checkMouseProximity(x, y, p1.x, p1.y)) { pointName = 'P1'; pointX = p1.x; pointY = p1.y; }
+            else if (checkMouseProximity(x, y, p2.x, p2.y)) { pointName = 'P2'; pointX = p2.x; pointY = p2.y; }
+            else if (checkMouseProximity(x, y, p3.x, p3.y)) { pointName = 'P3'; pointX = p3.x; pointY = p3.y; }
+            else if (checkMouseProximity(x, y, p4.x, p4.y)) { pointName = 'P4'; pointX = p4.x; pointY = p4.y; }
+            else if (checkMouseProximity(x, y, p5.x, p5.y)) { pointName = 'P5'; pointX = p5.x; pointY = p5.y; }
+            else if (checkMouseProximity(x, y, p6.x, p6.y)) { pointName = 'P6'; pointX = p6.x; pointY = p6.y; }
+            else if (checkMouseProximity(x, y, p7.x, p7.y)) { pointName = 'P7'; pointX = p7.x; pointY = p7.y; }
+            else if (checkMouseProximity(x, y, p8.x, p8.y)) { pointName = 'P8'; pointX = p8.x; pointY = p8.y; }
+            else if (checkMouseProximity(x, y, p9.x, p9.y)) { pointName = 'P9'; pointX = p9.x; pointY = p9.y; }
+            else { pointTooltip.style.opacity = '0'; return; }
+
+            pointTooltip.textContent = `${pointName}: (${Math.round(pointX)}, ${Math.round(pointY)})`;
+            pointTooltip.style.left = e.clientX + 'px';
+            pointTooltip.style.top = (e.clientY - 30) + 'px';
+            pointTooltip.style.opacity = '1';
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            pointTooltip.style.opacity = '0';
+        });
+
+        // 滑块事件处理
+        tSlider.addEventListener('input', () => {
+            const t = parseFloat(tSlider.value) / 100;
+            tDisplay.textContent = `t = ${t.toFixed(2)}`;
+            draw(t);
+        });
+
+        // 初始绘制
+        draw(0);
+        updateCodeExample();
+
+        // 切换按钮事件处理
+        toggleCurves.addEventListener('change', () => {
+            const t = parseFloat(tSlider.value) / 100;
+            draw(t);
+        });
+
+        toggleControls.addEventListener('change', () => {
+            const t = parseFloat(tSlider.value) / 100;
+            draw(t);
+        });
+
+        toggleIntermediates.addEventListener('change', () => {
+            const t = parseFloat(tSlider.value) / 100;
+            draw(t);
+        });
+
+        toggleLabels.addEventListener('change', () => {
+            const t = parseFloat(tSlider.value) / 100;
+            draw(t);
+        });
+    </script>
+</body>
+
+</html>
