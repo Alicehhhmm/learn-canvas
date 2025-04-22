@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Line-style Api - lineDashOffset / 线条样式-虚线偏移量</title>
+    <style>
+        :root {
+            --primary-color: blue;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #34495e;
+            --code-bg: #f8f9fa;
+            --border-radius: 8px;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #95a5a6;
+            --code-bg: #f8f9fa;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header span {
+            color: gray;
+        }
+
+        .header p {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            color: #555;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .main-content {
+            display: flex;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+
+        .canvas-container {
+            max-width: 500px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        canvas {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        .code-container {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .code-description {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .code-preview {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 0 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 20px;
+            overflow: auto;
+        }
+
+        #codeExample span {
+            font-family: Helvetica, sans-serif;
+        }
+
+        .slider-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .slider-container label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: var(--dark-gray);
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid var(--medium-gray);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>线条样式-虚线偏移量案例 / <span>Canvas Line-style Api - lineDashOffset</span></h1>
+            <p>使用滑块调整虚线的偏移量，观察虚线的变化。</p>
+        </header>
+
+        <main class="main-content">
+            <div class="canvas-container">
+                <canvas id="canvas2d" width="600" height="400">
+                    The current browser does not support canvas
+                </canvas>
+                <div class="slider-container">
+                    <label for="offsetSlider">偏移量: <span id="offsetValue">5</span></label>
+                    <input type="range" id="offsetSlider" min="-50" max="50" value="5">
+                </div>
+            </div>
+
+            <!-- 内容解析 -->
+            <div class="code-container">
+                <div class="code-description ">
+                    <h4>线条样式-虚线偏移量（实例属性）</h4>
+                    <p>
+                        lineDashOffset: 虚线偏移量，单位为像素，默认值为0.0 （零、负数、Infinity 和 NaN 值将被忽略） <br>
+                        - 该属性主要是用于设置虚线起始偏移量 <br>
+                        - 该属性的值会影响到虚线的起始位置， 正值表示向前偏移，负值表示向后偏移。 <br>
+
+
+                    </p>
+                    <h4>如图实例</h4>
+                    <p>
+                        无偏移量虚线: A1 <br>
+                        偏移量为5的虚线: A2 <br>
+                        - 起始位置向前（x轴右侧）偏移5px<br>
+                        - 相当于A2起始坐标由(50, 150)偏移到 (55, 150)<br>
+                        - 以A1为参考系，视觉上看是虚线的总长度没有变化，只是线条A2向x轴左侧移动了<br>
+                        - 反知，当偏移量为负数时，虚线的起始位置向后（x轴左侧）偏移。视觉上看为向x轴右侧移动。<br>
+                    </p>
+                </div>
+                <div class="code-preview">
+                    <pre id="codeExample">
+ctx.beginPath();
+ctx.moveTo(50, 150);
+ctx.lineTo(300, 150);
+ctx.setLineDash([20, 4, 4]);
+ctx.lineDashOffset = <span id="offsetId">0</span>;
+ctx.stroke();
+ctx.closePath();
+                    </pre>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <a href="https://github.com/Alicehhhmm/learn-canvas/blob/main/examples/line-dash-offset.html"
+                class="repo-link" target="_blank">
+                <svg class="repo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="#555">
+                    <path
+                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                </svg>
+            </a>
+            <p>&copy; 2025 Norush. </p>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas2d');
+        const ctx = canvas.getContext("2d");
+        const offsetSlider = document.getElementById('offsetSlider');
+        const offsetValue = document.getElementById('offsetValue');
+
+        // 初始化偏移量
+        let initOffset = 5;
+
+        // 绘制参考线
+        function drawReferenceLines () {
+            // 恢复默认样式设置，确保参考线的样式不会被之前的绘制操作影响
+            ctx.restore(); // 恢复之前的绘图状态
+            ctx.strokeStyle = '#aaa';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(50, 20);
+            ctx.lineTo(50, 220);
+            ctx.moveTo(300, 20);
+            ctx.lineTo(300, 220);
+            ctx.stroke()
+            ctx.closePath()
+            ctx.save(); // 保存当前绘图状态
+        }
+
+        // 绘制虚线
+        function drawDashedLines (offset) {
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawReferenceLines();
+
+            // 绘制没有偏移量的虚线作为参考
+            ctx.strokeStyle = 'green';
+            ctx.lineDashOffset = 0;
+            ctx.beginPath();
+            ctx.moveTo(50, 100);
+            ctx.lineTo(300, 100);
+            ctx.setLineDash([20, 4, 4]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 绘制有偏移量的虚线
+            ctx.strokeStyle = 'blue';
+            ctx.lineDashOffset = offset;
+            ctx.beginPath();
+            ctx.moveTo(50, 150);
+            ctx.lineTo(300, 150);
+            ctx.setLineDash([20, 4, 4]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 绘制文本标签
+            ctx.fillStyle = 'black';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+
+            // 标记 A1
+            ctx.fillText('A1', 320, 100);
+            ctx.fillText('A2', 320, 150);
+        }
+
+        // 更新代码示例
+        function updateCodeExample (offset) {
+            document.getElementById('offsetId').textContent = Math.round(offset);
+        }
+
+        // 更新偏移量并重新绘制
+        offsetSlider.addEventListener('input', function() {
+            const offset = parseInt(this.value);
+            offsetValue.textContent = offset;
+            drawDashedLines(offset);
+            updateCodeExample(offset);
+        });
+
+        // 初始绘制
+        drawDashedLines(initOffset);
+        updateCodeExample(initOffset);
+    </script>
+</body>
+
+</html>
