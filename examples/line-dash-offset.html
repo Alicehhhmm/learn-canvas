@@ -197,6 +197,9 @@ ctx.closePath();
         let initOffset = 5;
 
         // 绘制参考线
+        // - 当没有使用保存状态时，参考线的样式会被偏移量的变化影响
+        // - 当 ctx.lineDashOffset = offset; 变化时, 参考线的样式会变成虚线
+        // - 解决方法是使用 ctx.save() 和 ctx.restore() 方法来保存和恢复参考原有的状态
         function drawReferenceLines () {
             // 恢复默认样式设置，确保参考线的样式不会被之前的绘制操作影响
             ctx.restore(); // 恢复之前的绘图状态
