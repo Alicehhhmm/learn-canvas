@@ -1,19 +1,12 @@
-import '../styles/index.css'
-
-import viteLogo from '/vite.svg'
-
 document.querySelector('#app').innerHTML = `
-  <div>
-
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${viteLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
+    <div id="header">
+        <h1>
+            <span translate="no">NND Cavas Note</span>
+            <a id="version" href="#">0.0.1</a>
+        </h1>
+        <div id="sections">
+            <a href="manual/#en/creating-a-scene">docs</a>
+            <a href="/examples/bezier-curve">examples</a>
+        </div>
     </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
 `
