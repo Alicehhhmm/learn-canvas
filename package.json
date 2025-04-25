@@ -3,6 +3,21 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
+    "type": "module",
+    "exports": {
+        "./examples/*": "./examples/*",
+        "./manual/*": "./manual/*"
+    },
+    "fields": [
+        {
+            "name": "./examples",
+            "type": "module"
+        },
+        {
+            "name": "./manual",
+            "type": "module"
+        }
+    ],
     "scripts": {
         "dev": "vite",
         "build": "vite build",
