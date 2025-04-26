@@ -1,10 +1,6 @@
 import { defineConfig } from 'vite'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import { getMultiTypeInputs } from './utils/build/analyze-dist'
+import { getMultiTypeInputs } from './utils/build/generate-static-modules'
 import { viteCopyPlugin } from './utils/viteCopyPlugin'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
     root: './',
