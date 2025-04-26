@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Path API - roundRect 圆角矩形路径</title>
+    <style>
+        canvas {
+            border: 1px solid goldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas2d" width="600" height="600">
+        The current browser does not support canvas
+    </canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas2d')
+
+        if (canvas.getContext) {
+            var ctx = canvas.getContext("2d");
+
+            // 圆角矩形
+            // roundRect(x,y,width,height,radii)
+            // - x: 矩形左上角的 x 坐标
+            // - y: 矩形左上角的 y 坐标
+            // - width: 矩形的宽度，为负，圆角矩形水平翻转
+            // - height: 矩形的高度，为负，圆角矩形垂直翻转
+            // - radii: 角的圆弧半径的数字或列表
+            // -- 其数量和顺序与 CSS 属性 border-radius 相同
+            // -- [allcorners] : 全部角度相同
+            // -- [top-left-and-bottom-right, top-right-and-bottom-left] : [左上右下、右上左下] 对角角度相同
+            // -- [top-left,top-right-and-bottom-left,bottom-right] : [左上，右上左下，下右] 三个不同角度
+            // -- [top-left, top-right, bottom-right, bottom-left] : 四个角度不同
+
+
+            // 如下将以描边（stroke）的方式绘制几个不同角度的圆角矩形
+
+            // 初始化矩形大小
+            let width = 60, height = 60;
+
+            // 1.绘制全部角度半径为0的圆角矩形
+            ctx.strokeStyle = "green";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(50, 50, width, height, 0);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 2.绘制全部角度半径为10的圆角矩形
+            ctx.beginPath();
+            ctx.roundRect(150, 50, width, height, 10);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 3.绘制对角左上右下,角度半径为10的圆角矩形
+            ctx.strokeStyle = "orange";
+            ctx.beginPath();
+            ctx.roundRect(50, 150, width, height, [10, 0]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 4.绘制对角右上左下,角度半径为10的圆角矩形
+            ctx.strokeStyle = "orange";
+            ctx.beginPath();
+            ctx.roundRect(150, 150, width, height, [0, 10]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 5.绘制三个不同角度-左上，角度半径为10的圆角矩形
+            ctx.strokeStyle = "blue";
+            ctx.beginPath();
+            ctx.roundRect(50, 250, width, height, [10, 0, 0]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 6.绘制三个不同角度-右下, 角度半径为10的圆角矩形
+            ctx.beginPath();
+            ctx.roundRect(150, 250, width, height, [0, 0, 10]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 7.绘制三个不同角度-右上左下, 角度半径为10的圆角矩形
+            ctx.beginPath();
+            ctx.roundRect(250, 250, width, height, [0, 10, 0]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 8.绘制四个不同角度-左上，角度半径为10的圆角矩形
+            ctx.strokeStyle = "gray";
+            ctx.beginPath();
+            ctx.roundRect(50, 350, width, height, [10, 0, 0, 0]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 9.绘制四个不同角度-右上，角度半径为10的圆角矩形
+            ctx.beginPath();
+            ctx.roundRect(150, 350, width, height, [0, 10, 0, 0]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 10.绘制四个不同角度-右下，角度半径为10的圆角矩形
+            ctx.beginPath();
+            ctx.roundRect(250, 350, width, height, [0, 0, 10, 0]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 11.绘制四个不同角度-左下，角度半径为10的圆角矩形
+            ctx.beginPath();
+            ctx.roundRect(350, 350, width, height, [0, 0, 0, 10]);
+            ctx.stroke();
+            ctx.closePath();
+
+            // 12.绘制width为负的圆角矩形-水平翻转
+            ctx.strokeStyle = "red";
+            ctx.font = '12px mens-serif';
+            ctx.textAlign = 'center';
+
+            ctx.beginPath();
+            ctx.roundRect(150, 450, width, height, [10, 0, 0, 10]);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fillText('水平翻转前', 150 + 40, 450 - 10)
+
+            ctx.beginPath();
+            ctx.roundRect(150, 450, -width, height, [10, 0, 0, 10]);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fillText('-w水平翻转后', 150 - 40, 450 - 10)
+
+            // 13.绘制height为负的圆角矩形-垂直翻转
+            ctx.beginPath();
+            ctx.roundRect(300, 500, width, height, [10, 10, 0, 0]);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fillText('垂直翻转前', 300 + 30, 500 + 80)
+
+            ctx.beginPath();
+            ctx.roundRect(300, 500, width, -height, [10, 10, 0, 0]);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fillText('-h垂直翻转后', 300 + 30, 500 - 70)
+        }
+    </script>
+</body>
+
+</html>
