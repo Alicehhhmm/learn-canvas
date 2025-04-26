@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Line-style Api - miterLimit / 线条-尖角拐点斜接限制比</title>
+    <style>
+        canvas {
+            border: 1px solid goldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas2d" width="400" height="300">
+        The current browser does not support canvas
+    </canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas2d')
+
+        if (canvas.getContext) {
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 线条样式-斜接限定值（实例属性）
+            // 限制当两条线相交时交接处最大长度；
+            // 所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度。
+
+            // miterLimit: 斜接限制比，默认值为10
+            // -- 公式: miterLimit = max miterLength / lineWidth = 1 / sin ( min θ / 2 )
+
+            // 简单来说: 斜接限制比是一个数字，表示斜接的最大长度与线宽的比值
+            // -- 斜接限制比越大，斜接的角度越尖锐，线条的外观就越锐利
+            // -- 斜接限制比越小，斜接的角度越钝，线条的外观就越圆滑
+            // @see https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Applying_styles_and_colors#miterlimit_%E5%B1%9E%E6%80%A7%E7%9A%84%E6%BC%94%E7%A4%BA%E7%A4%BA%E4%BE%8B
+
+            // 如下将以描边（stroke）的方式绘制几个不同斜接限制比的线条
+
+            // 绘制参考线
+            ctx.strokeStyle = "#09f";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(50, 50, 200, 50);
+
+            // 设置线条样式
+            ctx.strokeStyle = "gray";
+            ctx.lineWidth = 10;
+            ctx.miterLimit = 12; // 斜接限制比值(控制斜接的尖锐程度)
+
+            // 绘制线条
+            let lineNum = 16;
+            ctx.beginPath();
+            ctx.moveTo(20, 100);
+            for (let i = 0; i < lineNum; i++) {
+                const dy = i % 2 === 0 ? 25 : -25;
+                ctx.lineTo(Math.pow(i, 1.5) * 2, 75 + dy);
+            }
+            ctx.stroke();
+            ctx.closePath();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Path API - ellipse</title>
+    <style>
+        canvas {
+            border: 1px solid goldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas2d" width="600" height="400">
+        The current browser does not support canvas
+    </canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas2d')
+
+        if (canvas.getContext) {
+            var ctx = canvas.getContext("2d");
+
+            // 椭圆
+            // ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle)
+            // - x, y: 椭圆中心坐标
+            // - radiusX, radiusY: 椭圆的半径
+            // - rotation: 旋转角度
+            // - startAngle, endAngle: 起始角度和结束角度，从正 x 轴沿顺时针测量
+            // - anticlockwise: 是否逆时针绘制，默认为 false
+
+            // 如下将从描边（stroke）和填充（fill）两个方法中分别绘制一个椭圆
+            // 在从不同的角度，来体现椭圆绘制过程
+
+            // 1. 绘制一个描边椭圆
+            ctx.beginPath();
+            ctx.ellipse(100, 50, 50, 25, Math.PI * 0.25, 0, Math.PI * 2);
+            ctx.strokeStyle = "goldenrod";
+            ctx.stroke();
+            ctx.closePath();
+
+            // 2. 绘制一个填充椭圆
+            ctx.beginPath();
+            ctx.ellipse(100, 150, 50, 25, Math.PI * 0.25, 0, Math.PI * 2);
+            ctx.fillStyle = "goldenrod";
+            ctx.fill();
+
+            // 3. 顺针绘制一个填充椭圆的过程
+            let isClockwise = false
+
+            // 绘制椭圆的四分之一（0到π/2）
+            ctx.fillStyle = "green";
+            ctx.beginPath();
+            ctx.ellipse(100, 250, 50, 30, Math.PI * 0.25, 0, Math.PI / 2, isClockwise);
+            ctx.fill();
+
+            // 绘制椭圆的一半（0到π）
+            ctx.beginPath();
+            ctx.ellipse(200, 250, 50, 30, Math.PI * 0.25, 0, Math.PI, isClockwise);
+            ctx.fill();
+
+            // 绘制椭圆的四分之三（0到3π/2）
+            ctx.beginPath();
+            ctx.ellipse(300, 250, 50, 30, Math.PI * 0.25, 0, Math.PI * 3 / 2, isClockwise);
+            ctx.fill();
+
+            // 绘制完整的椭圆（0到2π）
+            ctx.beginPath();
+            ctx.ellipse(400, 250, 50, 30, Math.PI * 0.25, 0, Math.PI * 2, isClockwise);
+            ctx.fill();
+        } 
+    </script>
+</body>
+
+</html>
