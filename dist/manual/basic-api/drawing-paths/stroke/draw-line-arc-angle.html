@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas - 不同角度绘制圆弧的过程（线性）</title>
+    <style>
+        canvas {
+            border: 1px solid sandybrown;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <Canvas id="canvas2d" width="400" height="300">
+        The current browser does not support canvas
+    </Canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas2d');
+
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+
+            // 绘制圆弧的方法：arc(x, y, radius, startAngle, endAngle, anticlockwise)
+            // - (x, y): 圆心坐标
+            // - radius: 圆弧的半径
+            // - startAngle: 起始角度（弧度）
+            // - endAngle: 结束角度（弧度）
+            // - anticlockwise: 绘制方向（布尔值：false为顺时针，true为逆时针）
+
+            // 弧度公式：弧度 = (Math.PI / 180) * 角度
+
+            // # 顺时针绘制填充圆弧（圆）的过程
+            // - 从0°开始，顺时针方法绘制
+            // - 每一步增加90度（π/2 ≈ 1.5708弧度）
+            let L90 = Math.PI / 2
+            let L180 = Math.PI
+            let L270 = Math.PI + Math.PI / 2
+            let L360 = Math.PI * 2
+
+            // 1.圆弧（0-90°） 
+            // - 绘制一个起始角度为0°，结束角度为90°的圆弧
+            ctx.beginPath();
+            ctx.arc(50, 50, 30, 0, L90, false);
+            ctx.stroke();
+
+            // 2.圆弧（0-180°）
+            // - 绘制一个起始角度为0°，结束角度为180°的圆弧
+            ctx.beginPath();
+            ctx.arc(120, 50, 30, 0, L180, false);
+            ctx.stroke();
+
+            // 3.圆弧（0-270°） 
+            // - 绘制一个起始角度为0°，结束角度为270°的圆弧
+            ctx.beginPath();
+            ctx.arc(190, 50, 30, 0, L270, false);
+            ctx.stroke();
+
+            // 4.圆弧（0-360°）  
+            // 绘制一个完整的圆（起始角度为0°，结束角度为360°）
+            ctx.beginPath();
+            ctx.arc(260, 50, 30, 0, L360, false);
+            ctx.stroke();
+
+            // # 逆时针绘制填充圆弧（圆）的过程
+            // - 从0度开始，逆时针方式绘制
+            // - 每步递增90度
+
+            // 1.圆弧(0-270°)
+            ctx.beginPath()
+            ctx.arc(50, 160, 30, 0, L270, true)
+            ctx.stroke();
+
+            // 2.圆弧(0-180°)
+            ctx.beginPath()
+            ctx.arc(120, 160, 30, 0, L180, true)
+            ctx.stroke();
+
+            // 3.圆弧(0-90°)
+            ctx.beginPath()
+            ctx.arc(190, 160, 30, 0, L90, true)
+            ctx.stroke();
+
+            // 4.圆弧(0-360°)
+            ctx.beginPath()
+            ctx.arc(260, 160, 30, 0, L360, true)
+            ctx.stroke();
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The CanvasRenderingContext2D API 文档</title>
+    <!-- wc-waterfall js -->
+    <script src="https://cdn.jsdelivr.net/npm/wc-waterfall/dist/index.iife.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans',
+                'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .card-title {
+            color: #2a9d8f;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .card-content ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .card-content li {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-content li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .card-content a {
+            color: #1d3557;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .card-content a:hover {
+            color: #2a9d8f;
+            -webkit-text-fill-color: #2a9d8f;
+            text-decoration: underline;
+        }
+
+        .card-content a strong {
+            font-weight: 600;
+            color: #1d3557;
+        }
+
+        .card-content p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 30px 0 20px;
+            color: #2c3e50;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 15px 0;
+            color: #2a9d8f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1>CanvasRenderingContext2D API 汇总文档</h1>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="搜索API..." />
+        </div>
+
+        <h2 class="section-title">实例属性</h2>
+        <wc-waterfall id="fl" cols="3" gap="20" class="content">
+            <div class="card">
+                <h3 class="category-title">绘图状态</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalAlpha">
+                                <strong>globalAlpha</strong>
+                                <p>全局透明度 (0-1)。默认值：`1.0`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">
+                                <strong>globalCompositeOperation</strong>
+                                <p>合成操作模式。默认值：`"source-over"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter">
+                                <strong>filter</strong>
+                                <p>CSS 滤镜效果。默认值：`"none"`。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">填充和描边样式</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillStyle">
+                                <strong>fillStyle</strong>
+                                <p>图形内部的颜色和样式。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/strokeStyle">
+                                <strong>strokeStyle</strong>
+                                <p>图形边线的颜色和样式。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">线条样式</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineWidth">
+                                <strong>lineWidth</strong>
+                                <p>线宽。默认值：`1.0`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineCap">
+                                <strong>lineCap</strong>
+                                <p>线端样式。可选值：`"butt"`、`"round"`、`"square"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineJoin">
+                                <strong>lineJoin</strong>
+                                <p>线拐角样式。可选值：`"miter"`、`"round"`、`"bevel"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit">
+                                <strong>miterLimit</strong>
+                                <p>斜接限制。默认值：`10.0`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineDashOffset">
+                                <strong>lineDashOffset</strong>
+                                <p>虚线偏移量。默认值：`0.0`。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">阴影</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/shadowColor">
+                                <strong>shadowColor</strong>
+                                <p>阴影颜色。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/shadowBlur">
+                                <strong>shadowBlur</strong>
+                                <p>阴影模糊半径。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/shadowOffsetX">
+                                <strong>shadowOffsetX</strong>
+                                <p>阴影水平偏移。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/shadowOffsetY">
+                                <strong>shadowOffsetY</strong>
+                                <p>阴影垂直偏移。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">文本样式</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/font">
+                                <strong>font</strong>
+                                <p>字体定义。默认值为 `"10px sans-serif"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/textAlign">
+                                <strong>textAlign</strong>
+                                <p>文本对齐设置。可选值：`"start"`、`"center"`、`"end"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/textBaseline">
+                                <strong>textBaseline</strong>
+                                <p>
+                                    文本基线设置。可选值：`"top"`、`"hanging"`、`"middle"`、`"alphabetic"`、`"ideographic"`、`"bottom"`。
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/direction">
+                                <strong>direction</strong>
+                                <p>文本方向。可选值：`"ltr"`、`"rtl"`、`"inherit"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/letterSpacing">
+                                <strong>letterSpacing</strong>
+                                <p>字母间距。默认值为：0px。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fontKerning">
+                                <strong>fontKerning</strong>
+                                <p>字体字距调整。允许的值：auto（默认）、normal 或 none。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fontStretch">
+                                <strong>fontStretch</strong>
+                                <p>字体拉伸。允许的值：ultra-condensed、extra-condensed、condensed、semi-condensed、normal（默认）、semi-expanded、expanded、extra-expanded
+                                    或 ultra-expanded。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fontVariantCaps">
+                                <strong>fontVariantCaps</strong>
+                                <p>字体变体大小写。允许的值：normal（默认）、small-caps、all-small-caps、petite-caps、all-petite-caps、unicase
+                                    或 titling-caps。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/textRendering">
+                                <strong>textRendering</strong>
+                                <p>文本渲染。允许的值：auto（默认）、optimizeSpeed、optimizeLegibility 或 geometricPrecision。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/wordSpacing">
+                                <strong>wordSpacing</strong>
+                                <p>单词间距。默认值为：0px。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">图像处理</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/imageSmoothingEnabled">
+                                <strong>imageSmoothingEnabled</strong>
+                                <p>是否启用平滑。默认值：`true`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/imageSmoothingQuality">
+                                <strong>imageSmoothingQuality</strong>
+                                <p>平滑质量。可选值：`"low"`、`"medium"`、`"high"`。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </wc-waterfall>
+
+        <h2 class="section-title">实例方法</h2>
+        <wc-waterfall id="fl" cols="3" gap="20" class="content">
+            <div class="card">
+                <h3 class="category-title">路径操作</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/beginPath">
+                                <strong>beginPath()</strong>
+                                <p>开始新路径。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/closePath">
+                                <strong>closePath()</strong>
+                                <p>闭合路径。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/moveTo">
+                                <strong>moveTo(x, y)</strong>
+                                <p>将路径的起点移动到指定坐标。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/lineTo">
+                                <strong>lineTo(x, y)</strong>
+                                <p>绘制直线到指定坐标。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/arc">
+                                <strong>arc(x, y, r, sAngle, eAngle, anticlockwise)</strong>
+                                <p>绘制圆弧。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/ellipse">
+                                <strong>ellipse(x, y, rx, ry, rotation, sAngle, eAngle, anticlockwise)</strong>
+                                <p>绘制椭圆。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/rect">
+                                <strong>rect(x, y, w, h)</strong>
+                                <p>添加矩形路径。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/quadraticCurveTo">
+                                <strong>quadraticCurveTo(cpx, cpy, x, y)</strong>
+                                <p>添加二次贝塞尔曲线。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/bezierCurveTo">
+                                <strong>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</strong>
+                                <p>添加三次贝塞尔曲线。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">绘制命令</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fill">
+                                <strong>fill([fillRule])</strong>
+                                <p>填充路径。可选参数：`"nonzero"`/`"evenodd"`。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/stroke">
+                                <strong>stroke()</strong>
+                                <p>描边路径。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip">
+                                <strong>clip([fillRule])</strong>
+                                <p>设置裁剪区域。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">绘制矩形</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillRect">
+                                <strong>fillRect(x, y, w, h)</strong>
+                                <p>绘制填充矩形。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/strokeRect">
+                                <strong>strokeRect(x, y, w, h)</strong>
+                                <p>绘制矩形边框。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clearRect">
+                                <strong>clearRect(x, y, w, h)</strong>
+                                <p>清除指定矩形区域。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">图像处理</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/drawImage">
+                                <strong>drawImage(image, dx, dy, dWidth, dHeight)</strong>
+                                <p>绘制图像。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createImageData">
+                                <strong>createImageData(w, h)</strong>
+                                <p>创建像素数据对象。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/getImageData">
+                                <strong>getImageData(sx, sy, sw, sh)</strong>
+                                <p>获取像素数据。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/putImageData">
+                                <strong>putImageData(data, dx, dy, dirtyX, dirtyY, dirtyW, dirtyH)</strong>
+                                <p>写入像素数据。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">变换</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/translate">
+                                <strong>translate(x, y)</strong>
+                                <p>平移坐标系。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/rotate">
+                                <strong>rotate(angle)</strong>
+                                <p>旋转坐标系。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/scale">
+                                <strong>scale(sx, sy)</strong>
+                                <p>缩放坐标系。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/transform">
+                                <strong>transform(a, b, c, d, e, f)</strong>
+                                <p>应用变换矩阵。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setTransform">
+                                <strong>setTransform(a, b, c, d, e, f)</strong>
+                                <p>重置并应用变换。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/resetTransform">
+                                <strong>resetTransform()</strong>
+                                <p>重置为单位矩阵。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/getTransform">
+                                <strong>getTransform()</strong>
+                                <p>获取当前变换矩阵。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">渐变与图案</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createLinearGradient">
+                                <strong>createLinearGradient(x0, y0, x1, y1)</strong>
+                                <p>创建线性渐变。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient">
+                                <strong>createRadialGradient(x0, y0, r0, x1, y1, r1)</strong>
+                                <p>创建径向渐变。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createConicGradient">
+                                <strong>createConicGradient(startAngle, x, y)</strong>
+                                <p>创建锥形渐变。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createPattern">
+                                <strong>createPattern(image, repetition)</strong>
+                                <p>创建图案。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">线型</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash">
+                                <strong>setLineDash([])</strong>
+                                <p>设置当前的虚线样式。默认为空数组[]，表示实线。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/getLineDash">
+                                <strong>getLineDash()</strong>
+                                <p>返回当前线段样式的数组，数组包含一组数量为偶数的非负数字。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">文本绘制</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/fillText">
+                                <strong>fillText(text, x, y, maxWidth)</strong>
+                                <p>填充文本。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/strokeText">
+                                <strong>strokeText(text, x, y, maxWidth)</strong>
+                                <p>描边文本。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/measureText">
+                                <strong>measureText(text)</strong>
+                                <p>返回文本尺寸对象。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">状态管理</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/save">
+                                <strong>save()</strong>
+                                <p>保存当前绘图状态。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/restore">
+                                <strong>restore()</strong>
+                                <p>恢复保存的绘图状态。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="category-title">辅助方法</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInPath">
+                                <strong>isPointInPath(x, y, fillRule)</strong>
+                                <p>检测点是否在路径内。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/isPointInStroke">
+                                <strong>isPointInStroke(x, y)</strong>
+                                <p>检测点是否在描边内。</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                                href="https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/getContextAttributes">
+                                <strong>getContextAttributes()</strong>
+                                <p>获取上下文属性。</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </wc-waterfall>
+    </div>
+
+    <script>
+        // 搜索功能
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim().toLowerCase()
+            const cards = document.querySelectorAll('.card')
+
+            cards.forEach(card => {
+                const visibleItems = Array.from(card.querySelectorAll('.card-content li')).filter(item => {
+                    const text = item.textContent.toLowerCase()
+                    const isMatch = text.includes(searchTerm)
+                    item.style.display = isMatch ? 'block' : 'none'
+                    return isMatch
+                })
+
+                // 根据可见项数量控制卡片显示
+                const contentContainer = card.querySelector('.card-content')
+                if (visibleItems.length > 0) {
+                    card.style.display = 'block'
+                    contentContainer.style.height = 'auto'
+                } else {
+                    card.style.display = 'none'
+                    contentContainer.style.height = '0'
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
