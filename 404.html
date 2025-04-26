@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .error-img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .actions a,
+        .actions button {
+            padding: 0.75rem 1.5rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .actions a:hover,
+        .actions button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .countdown {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+
+            .error-img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="error-code">404</div>
+        <img class="error-img" src="/public/loading-animation.gif" alt="Lost in space animation">
+    </div>
+
+    <h1>Page Not Found</h1>
+    <p>The requested URL was not found on this server.</p>
+
+    <div class="actions">
+        <a href="/">Return Home</a>
+        <button onclick="history.back()">Go Back</button>
+    </div>
+
+    <div class="countdown">
+        Redirecting to <a href="/">Home</a> in <span id="countdown">10</span> seconds...
+    </div>
+
+    <script>
+        // 自动跳转和倒计时逻辑
+        let timer = 10;
+        const countdownEl = document.getElementById('countdown');
+
+        const countdown = setInterval(() => {
+            timer--;
+            countdownEl.textContent = timer;
+            if (timer <= 0) {
+                clearInterval(countdown);
+                window.location.href = '/';
+            }
+        }, 1000);
+    </script>
+
+</body>
+
+</html>
