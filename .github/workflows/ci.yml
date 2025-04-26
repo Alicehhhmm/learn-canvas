@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    workflow_dispatch: # 👉 支持手动点击 Run workflow
+    push:
+        tags:
+            - 'v*' # 👉 只监听 v开头的tag，比如 v1.0.0
+permissions:
+    contents: read
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: ♻️ Checkout code
+              uses: actions/checkout@v4
+
+            - name: 🎉 Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: 📝 Install dependencies
+              run: pnpm install
+
+            - name: 📦 Build project
+              run: pnpm run build
+
+            # 仅在构建成功时部署
+            - name: 🚀 Deploy to gh-pages
+              if: success()
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./dist
