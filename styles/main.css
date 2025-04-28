@@ -199,6 +199,14 @@ h1 {
 .github-start i {
     font-size: 12px;
 }
+.github-start span {
+    background-image: url('/files/github_24dp.svg');
+    background-repeat: no-repeat;
+    background-position: left center;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+}
 
 /* Footer */
 footer {
