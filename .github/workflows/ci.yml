@@ -6,7 +6,7 @@ on:
         tags:
             - 'v*' # 👉 只监听 v开头的tag，比如 v1.0.0
 permissions:
-    contents: read
+    contents: write # 需要write权限才能推送到gh-pages
 
 jobs:
     deploy:
@@ -15,11 +15,14 @@ jobs:
         steps:
             - name: ♻️ Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # 获取全部提交历史，方便部署
 
             - name: 🎉 Setup Node
               uses: actions/setup-node@v4
               with:
                   node-version: 20
+                  cache: 'pnpm' # 使用pnpm缓存，加速安装
 
             - name: 📝 Install dependencies
               run: pnpm install
@@ -34,3 +37,5 @@ jobs:
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./dist
+                  keep_files: true # ✅ 部署时不清空整个分支，而是在已有文件基础上覆盖。
+                  commit_message: '🚀 deploy: update by GitHub Actions'
