@@ -4,11 +4,24 @@
     },
 
     "基础API": {
+        "API汇总": "basic-api/index",
+
+        "线型": {},
+
         "路径": {
             "bezierCurveTo": "basic-api/path/bezierCurveTo",
             "ellipse": "basic-api/path/ellipse"
         },
 
-        "文本": {}
+        "绘制路径": {},
+
+        "文本": {},
+
+        "变换": {}
+    },
+
+    "特效案例": {
+        "particle-line-color": "special-effects/particle-line-color",
+        "particle-line": "special-effects/particle-line"
     }
 }
