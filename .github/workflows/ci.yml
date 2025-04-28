@@ -22,7 +22,6 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-                  cache: 'pnpm' # 使用pnpm缓存，加速安装
 
             - name: 📦 Install pnpm
               run: npm install -g pnpm # ✅ 安装 pnpm
