@@ -10,7 +10,7 @@ export default defineConfig({
         emptyOutDir: true,
         rollupOptions: {
             input: getMultiTypeInputs(),
-            plugins: [viteCopyPlugin(['files'])],
+            plugins: [viteCopyPlugin(['files', 'manual/**/*.{json}'])],
         },
     },
 })
