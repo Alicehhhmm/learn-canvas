@@ -1,0 +1,68 @@
+{
+    "zh": {
+        "介绍": {
+            "简介": "/article/fundamentals2",
+            "学习目的": "/article/fundamentals",
+            "学习路线图": "/article/fundamentals"
+        },
+        "基础": {
+            "Canvas 简介": "/article/fundamentals",
+            "Canvas 基本使用": "/article/fundamentals"
+        },
+        "绘制形状": {
+            "栅格 (grid) 和坐标空间": "/article/fundamentals",
+            "绘制矩形": "/article/fundamentals"
+        },
+        "绘制路径(path)": {
+            "线段": "/article/fundamentals",
+            "三角形": "/article/fundamentals",
+            "矩形": "/article/fundamentals",
+            "圆弧和圆": "/article/fundamentals",
+            "椭圆": "/article/fundamentals",
+            "贝塞尔曲线": "/article/fundamentals"
+        },
+        "应用样式和色彩": {
+            "色彩": "/article/fundamentals",
+            "透明度": "/article/fundamentals",
+            "线型样式": "/article/fundamentals",
+            "渐变": "/article/fundamentals",
+            "图案样式": "/article/fundamentals",
+            "阴影": "/article/fundamentals",
+            "填充规则": "/article/fundamentals"
+        },
+        "绘制文本": {
+            "描边&填充文本": "/article/fundamentals",
+            "文本样式": "/article/fundamentals",
+            "文本阴影": "/article/fundamentals",
+            "预测量文本": "/article/fundamentals"
+        },
+        "绘制图片": {
+            "绘制": "/article/fundamentals",
+            "缩放图片": "/article/fundamentals",
+            "切片": "/article/fundamentals",
+            "画廊案例": "/article/fundamentals"
+        },
+        "变换": {
+            "状态的保存和恢复": "/article/fundamentals",
+            "移动": "/article/fundamentals",
+            "旋转": "/article/fundamentals",
+            "缩放": "/article/fundamentals",
+            "形变": "/article/fundamentals"
+        },
+        "组合与裁剪路径": {
+            "合成": "/article/fundamentals",
+            "裁剪": "/article/fundamentals"
+        },
+        "动画": {
+            "基础动画": "/article/fundamentals",
+            "高阶动画": "/article/fundamentals"
+        },
+        "其他": {
+            "像素操作": "/article/fundamentals"
+        },
+        "---": {},
+        "参考": {
+            "MDN-Canvas_API": ""
+        }
+    }
+}
