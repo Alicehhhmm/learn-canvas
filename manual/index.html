@@ -24,13 +24,15 @@
             <div id="expandButton"></div>
         </header>
 
+        <div id="panelScrim"></div>
+
         <div id="contentWrapper">
             <div id="inputWrapper">
                 <input placeholder="" type="text" id="filterInput" autocorrect="off" autocapitalize="off" spellcheck="false" />
                 <div id="clearSearchButton"></div>
                 <select id="language">
                     <option value="zh">中文</option>
-                    <option value="en">en</option>
+                    <!-- <option value="en">en</option> -->
                 </select>
             </div>
             <br />
@@ -69,6 +71,25 @@
             // Localization
 
             let language = 'zh'
+
+            // use match str /en/ ：article/en/name
+            // const hashLanguage = /\/(.*?)\//.exec( hash );
+
+            // Functionality for hamburger button (on small devices)
+
+            expandButton.onclick = function ( event ) {
+
+                event.preventDefault();
+                panel.classList.toggle( 'open' );
+
+            };
+
+            panelScrim.onclick = function ( event ) {
+
+                event.preventDefault();
+                panel.classList.toggle( 'open' );
+
+            };
 
             // Functionality for search/filter input field
 
