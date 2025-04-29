@@ -124,7 +124,7 @@
 
     <div class="header">
         <div class="error-code">404</div>
-        <img class="error-img" src="/public/loading-animation.gif" alt="Lost in space animation">
+        <img class="error-img" src="/files/loading-animation.gif" alt="Lost in space animation">
     </div>
 
     <h1>Page Not Found</h1>
@@ -142,16 +142,16 @@
     <script>
         // 自动跳转和倒计时逻辑
         let timer = 10;
-        const countdownEl = document.getElementById('countdown');
+        const countdownEl = document.getElementById( 'countdown' );
 
-        const countdown = setInterval(() => {
+        const countdown = setInterval( () => {
             timer--;
             countdownEl.textContent = timer;
-            if (timer <= 0) {
-                clearInterval(countdown);
-                window.location.href = '/';
+            if ( timer <= 0 ) {
+                clearInterval( countdown );
+                // window.location.href = '/';
             }
-        }, 1000);
+        }, 1000 );
     </script>
 
 </body>
