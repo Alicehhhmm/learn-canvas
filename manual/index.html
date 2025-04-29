@@ -102,9 +102,19 @@
 
             };
 
+            // Activate content and title change on browser navigation
+
+            window.onpopstate = function () {
+
+                updateNavigation();
+                createNewIframe();
+
+            };
+
             // Create the navigation panel and configure the iframe
 
             createNavigation( list, language )
+            createNewIframe()
 
             // Handle search query
 
@@ -341,6 +351,88 @@
                 }
 
             } );
+
+        }
+
+        // Routing
+
+        function createNewIframe () {
+
+            // Change the content displayed in the iframe
+            // First separate the member part of the fragment (if existing)
+
+            const hash = window.location.hash.substring( 1 );
+            const splitHash = decomposePageName( hash, '.', '#' );
+
+            // Creating a new Iframe instead of assigning a new src is
+            // a cross-browser solution to allow normal browser navigation;
+            // - only assigning a new src would result in two history states each time.
+
+            // Note: iframe.contentWindow.location.replace(hash) should work, too,
+            // but it doesn't work in Edge with links from the subpages!
+
+            const oldIframe = iframe;
+            iframe = oldIframe.cloneNode();
+
+            if ( hash ) {
+
+                // We can have 2 hashes. One for the main page, one for the page it's referencing
+                // In other words
+                //	 #en/somePage#someSectionOfPage
+                const subHash = splitHash[0].indexOf( '#' );
+                let src;
+                if ( subHash >= 0 ) {
+
+                    const beforeSubHash = splitHash[0].slice( 0, subHash );
+                    const afterSubHash = splitHash[0].slice( subHash );
+                    src = `${beforeSubHash}.html${afterSubHash}${splitHash[1]}`;
+
+                } else {
+
+                    src = splitHash[0] + '.html' + splitHash[1];
+
+                }
+                console.log( 'createNewIframe@src', src );
+
+
+                iframe.src = src; // lgtm[js/client-side-unvalidated-url-redirection]
+                iframe.style.display = 'unset';
+
+            } else {
+
+                iframe.src = '';
+                iframe.style.display = 'none';
+
+            }
+
+            document.body.replaceChild( iframe, oldIframe );
+
+        }
+
+        function decomposePageName ( pageName, oldDelimiter, newDelimiter ) {
+
+            // Helper function for separating the member (if existing) from the pageName
+            // For example: 'Geometry.morphTarget' can be converted to
+            // ['Geometry', '.morphTarget'] or ['Geometry', '#morphTarget']
+            // Note: According RFC 3986 no '#' allowed inside of an URL fragment!
+
+            let parts = [];
+
+            const dotIndex = pageName.indexOf( oldDelimiter );
+
+            if ( dotIndex !== - 1 ) {
+
+                parts = pageName.split( oldDelimiter );
+                parts[1] = newDelimiter + parts[1];
+
+            } else {
+
+                parts[0] = pageName;
+                parts[1] = '';
+
+            }
+
+            return parts;
 
         }
 
