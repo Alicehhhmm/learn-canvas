@@ -140,6 +140,33 @@
             margin: 15px 0;
             color: #2a9d8f;
         }
+
+        /* mobile */
+
+        @media all and (max-width: 640px) {
+
+            .container {
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .page-header {
+                margin-bottom: 0;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+            }
+
+            .search-container {
+                margin: 0;
+            }
+
+            .section-title {
+                margin: 20px 0 15px;
+            }
+
+        }
     </style>
 </head>
 
@@ -781,52 +808,64 @@
     </div>
 
     <script>
+        const searchInput = document.querySelector( '.search-input' )
+        const cards = document.querySelectorAll( '.card' )
 
-        // 搜索功能
-        document.querySelector( '.search-input' ).addEventListener( 'input', function ( e ) {
-            const searchTerm = e.target.value.trim().toLowerCase()
-            const cards = document.querySelectorAll( '.card' )
+        init()
 
-            cards.forEach( card => {
-                const visibleItems = Array.from( card.querySelectorAll( '.card-content li' ) ).filter( item => {
-                    const text = item.textContent.toLowerCase()
-                    const isMatch = text.includes( searchTerm )
-                    item.style.display = isMatch ? 'block' : 'none'
-                    return isMatch
+        function init () {
+            updateFilter()
+            adjustWaterfallLayout()
+        }
+
+        function updateFilter () {
+            searchInput.addEventListener( 'input', function ( e ) {
+                const searchTerm = e.target.value.trim().toLowerCase()
+
+                cards.forEach( card => {
+                    const visibleItems = Array.from( card.querySelectorAll( '.card-content li' ) )
+
+                    visibleItems.filter( item => {
+                        const text = item.textContent.toLowerCase()
+                        const isMatch = text.includes( searchTerm )
+                        item.style.display = isMatch ? 'block' : 'none'
+                        return isMatch
+                    } )
+
+                    // 根据可见项数量控制卡片显示
+                    const contentContainer = card.querySelector( '.card-content' )
+                    if ( visibleItems.length > 0 ) {
+                        card.style.display = 'block'
+                        contentContainer.style.height = 'auto'
+                    } else {
+                        card.style.display = 'none'
+                        contentContainer.style.height = '0'
+                    }
                 } )
-
-                // 根据可见项数量控制卡片显示
-                const contentContainer = card.querySelector( '.card-content' )
-                if ( visibleItems.length > 0 ) {
-                    card.style.display = 'block'
-                    contentContainer.style.height = 'auto'
-                } else {
-                    card.style.display = 'none'
-                    contentContainer.style.height = '0'
-                }
             } )
-        } )
+        }
 
-        // 响应式布局
         function adjustWaterfallLayout () {
-            const waterfalls = document.querySelectorAll( 'wc-waterfall' )
+            const waterfalls = document.querySelectorAll( 'wc-waterfall' );
             const width = window.innerWidth;
+            let cols, gap;
 
             waterfalls.forEach( waterfall => {
+
                 if ( width > 992 ) {
-                    // 中等大屏幕：3 列，间距 25px
-                    waterfall.setAttribute( 'cols', '3' );
-                    waterfall.setAttribute( 'gap', '25' );
-                } else if ( width > 768 ) {
-                    // 中等屏幕：2 列，间距 20px
-                    waterfall.setAttribute( 'cols', '2' );
-                    waterfall.setAttribute( 'gap', '20' );
-                } else if ( width > 576 ) {
-                    // 非常小的屏幕：1 列，间距 10px
-                    waterfall.setAttribute( 'cols', '1' );
-                    waterfall.setAttribute( 'gap', '10' );
+                    cols = '3';
+                    gap = '20';
+                } else if ( width > 640 ) {
+                    cols = '2';
+                    gap = '15';
+                } else {
+                    cols = '1';
+                    gap = '10';
                 }
-            } )
+
+                waterfall.setAttribute( 'cols', cols );
+                waterfall.setAttribute( 'gap', gap );
+            } );
         }
 
         window.addEventListener( 'resize', function ( e ) {
