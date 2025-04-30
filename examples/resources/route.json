@@ -1,0 +1,5 @@
+{
+    "图形": [],
+    "动画": [],
+    "交互": ["bezier-curve", "line-dash-offset", "piecewise-bezier-urves", "quadratic-curve", "reset-and-clearRect"]
+}

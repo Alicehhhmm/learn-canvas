@@ -6,6 +6,7 @@
     <title>examples page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/styles/main.css">
+    <link rel="stylesheet" type="text/css" href="./resources/page.css">
 </head>
 
 <body>
@@ -24,8 +25,7 @@
                 <i>🔭</i> Example
             </a>
             <a href="https://github.com/Alicehhhmm/learn-canvas" target="_blank" class="nav-item">
-                <svg class="repo-icon" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"
-                    fill="#555">
+                <svg class="repo-icon" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="#555">
                     <path
                         d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
                 </svg>
@@ -36,8 +36,45 @@
         </nav>
     </header>
 
-    <main class="main-content">
-        <div class="examples-container">examples page</div>
+    <div id="topObserver"></div>
+
+    <main class="examples-container">
+        <h1>案例探索</h1>
+        <section class="examples-header">
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <input type="text" class="search-box" placeholder="🔍 搜索案例..." />
+                    <button id="clearBtn" class="clear-btn">&times;</button>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="filters">
+                    <button class="filter-btn active" data-type="all">全部</button>
+                    <button class="filter-btn" data-type="图形">图形</button>
+                    <button class="filter-btn" data-type="动画">动画</button>
+                    <button class="filter-btn" data-type="交互">交互</button>
+                </div>
+                <div class="sort-group">
+                    <div class="custom-select">
+                        <select class="sort-select">
+                            <option value="default">默认排序</option>
+                            <option value="title">标题排序</option>
+                            <option value="type">类型排序</option>
+                            <option value="created">创建时间</option>
+                            <option value="updated">更新时间</option>
+                        </select>
+                        <div class="dropdown-arrow"></div>
+                    </div>
+                    <button class="layout-btn"><span class="layout-icon">🧱</span></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="examples-list">
+            <div class="grid"></div>
+            <div id="bottomObserver"></div>
+            <div id="loading-indicator" class="hidden">加载中...</div>
+        </section>
     </main>
 
     <footer>
@@ -51,7 +88,150 @@
         </div>
     </footer>
 
-    <script></script>
+    <script>
+        const topObserver = document.querySelector( '#topObserver' )
+        const bottomObserver = document.querySelector( '#bottomObserver' )
+        const grid = document.querySelector( ".grid" );
+        const searchBox = document.querySelector( ".search-box" );
+        const clearBtn = document.querySelector( ".clear-btn" );
+        const filterButtons = document.querySelectorAll( ".filter-btn" );
+        const sortSelect = document.querySelector( ".sort-select" );
+        const layoutBtn = document.querySelector( ".layout-btn" );
+        const layoutIcon = layoutBtn.querySelector( ".layout-icon" );
+        const loadingIndicator = document.getElementById( "loading-indicator" );
+
+        let filteredCases = [];
+        let renderIndex = 0;
+        const PAGE_SIZE = 9;
+
+        const cases = Array.from( { length: 100 } ).map( ( _, i ) => ( {
+            title: `案例 ${i + 1}`,
+            type: ['图形', '动画', '交互'][i % 3],
+            preview: `预览 ${i + 1}`,
+            description: `这是关于案例 ${i + 1} 的简要介绍。`,
+            created: Date.now() - Math.floor( Math.random() * 1000000000 ),
+            updated: Date.now() - Math.floor( Math.random() * 100000000 )
+        } ) );
+
+        // Functionality fixed header 
+        const observerHeader = new IntersectionObserver(
+            ( entries ) => {
+                const entry = entries[0]
+
+                if ( !entry.isIntersecting && entry.intersectionRatio < 1 ) {
+                    document.querySelector( '.examples-header' ).classList.add( 'fixed' );
+                    document.querySelector( '.examples-list' ).classList.add( 'fixed' );
+                } else {
+                    document.querySelector( '.examples-header' ).classList.remove( 'fixed' );
+                    document.querySelector( '.examples-list' ).classList.remove( 'fixed' );
+                }
+            },
+            { threshold: 0.25 }
+        );
+        observerHeader.observe( topObserver )
+
+        // Tag Functionality
+        filterButtons.forEach( btn => btn.addEventListener( "click", () => {
+            filterButtons.forEach( b => b.classList.remove( "active" ) );
+            btn.classList.add( "active" );
+            sortSelect.value = "default";
+            resetRender();
+        } ) );
+
+        // Search Functionality
+        searchBox.addEventListener( "input", () => {
+            clearBtn.style.display = searchBox.value ? 'block' : 'none';
+            resetRender();
+        } );
+
+        clearBtn.addEventListener( "click", () => {
+            searchBox.value = "";
+            clearBtn.style.display = "none";
+            resetRender();
+        } );
+
+        // Sort-group Functionality
+        sortSelect.addEventListener( "change", () => resetRender() );
+        layoutBtn.addEventListener( "click", () => {
+            grid.classList.toggle( "single" );
+            layoutBtn.classList.toggle( "active" );
+            layoutIcon.textContent = grid.classList.contains( "single" ) ? "📄" : "🧱";
+        } );
+
+        // Functionality listening list to bottom
+        const observerList = new IntersectionObserver(
+            ( entries ) => {
+                const entry = entries[0]
+
+                if ( entry.isIntersecting && entry.intersectionRatio === 1 ) {
+                    renderMore();
+                }
+            },
+            { threshold: 0.25 }
+        );
+        observerList.observe( bottomObserver )
+
+        function resetRender () {
+            renderIndex = 0;
+            grid.innerHTML = "";
+            filteredCases = getFilteredSortedCases();
+            renderMore();
+        }
+
+        function renderMore () {
+            if ( renderIndex >= filteredCases.length ) return;
+            loadingIndicator.classList.remove( "hidden" );
+            setTimeout( () => {
+                const nextCases = filteredCases.slice( renderIndex, renderIndex + PAGE_SIZE );
+                nextCases.forEach( item => {
+                    const card = document.createElement( "div" );
+                    card.className = "card";
+                    card.innerHTML = `
+                        <div class="card-preview">${item.preview}</div>
+                        <div class="card-content">
+                        <div>
+                            <div class="card-type">${item.type}</div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-description">${item.description}</div>
+                        </div>
+                        </div>
+                    `;
+                    grid.appendChild( card );
+                } );
+                renderIndex += PAGE_SIZE;
+                loadingIndicator.classList.add( "hidden" );
+            }, 300 );
+        }
+
+        // 排序方法
+        function getFilteredSortedCases () {
+            const searchValue = searchBox.value.toLowerCase();
+            const selectedType = document.querySelector( ".filter-btn.active" )?.dataset.type || "all";
+            const sortBy = sortSelect.value;
+
+            let result = [...cases];
+
+            if ( selectedType !== "all" ) {
+                result = result.filter( item => item.type === selectedType );
+            }
+            if ( searchValue ) {
+                result = result.filter( item => item.title.toLowerCase().includes( searchValue ) );
+            }
+            if ( sortBy === "title" ) {
+                result.sort( ( a, b ) => a.title.localeCompare( b.title ) );
+            } else if ( sortBy === "type" ) {
+                result.sort( ( a, b ) => a.type.localeCompare( b.type ) );
+            } else if ( sortBy === "created" ) {
+                result.sort( ( a, b ) => b.created - a.created );
+            } else if ( sortBy === "updated" ) {
+                result.sort( ( a, b ) => b.updated - a.updated );
+            }
+
+            return result;
+        }
+
+        resetRender();
+    </script>
 </body>
 
 </html>
