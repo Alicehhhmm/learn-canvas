@@ -6,6 +6,26 @@
     --subtle: #64748b;
     --radius: 10px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    --tag-graph: #252423;
+    --tag-animat: #f68c3b;
+    --tag-interaction: #e6e6e6;
+    --tag-effects: #ff4d4d;
+    --tag-other: #00d1ff;
+}
+
+body {
+    background-color: #f8fafc;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
 }
 
 .examples-container {
@@ -50,22 +70,36 @@
     position: relative;
     width: 66%;
 }
-
-.search-box {
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
+#searchInput {
     width: 100%;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
     border-radius: var(--radius);
     border: 1px solid #cbd5e1;
+    color: var(--text-color);
     background-color: #fff;
     outline: none;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+    background-image: url(../../files/ic_search_black_24dp.svg);
+    background-size: var(--icon-size);
+    background-repeat: no-repeat;
+    background-position: right 2% bottom 40%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
-.search-box:focus {
+#searchInput.searchFocused {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-light);
+    background-image: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+    background-color: inherit;
 }
 
 .clear-btn {
@@ -286,4 +320,27 @@
     color: var(--subtle);
     font-size: 0.9rem;
     padding: 2rem 0;
+}
+
+/* mobile */
+
+@media all and (max-width: 640px) {
+    .examples-container h1 {
+        font-size: 20px;
+        font-weight: 600;
+        padding: 0.8rem 0 0;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+    .controls {
+        padding: 0;
+        gap: 10px;
+        margin-bottom: 1rem;
+    }
+
+    #searchInput {
+        padding: 0.625rem 1rem;
+    }
 }
