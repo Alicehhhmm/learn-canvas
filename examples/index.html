@@ -169,8 +169,8 @@
                 preview: `预览 ${i + 1}`,
                 url: './quadratic-curve.html',
                 description: `这是关于案例 ${i + 1} 的简要介绍。`,
-                created: Date.now() - Math.floor( Math.random() * 1000000000 ),
-                updated: Date.now() - Math.floor( Math.random() * 100000000 ),
+                createdAt: Date.now() - Math.floor( Math.random() * 1000000000 ),
+                updatedAt: Date.now() - Math.floor( Math.random() * 100000000 ),
             } ) );
 
 
@@ -192,14 +192,12 @@
             observerHeader.observe( topObserver )
 
             // Tag Functionality
-            filterButtons.forEach( ( btn ) => {
-                btn.click = function () {
-                    filterButtons.forEach( b => b.classList.remove( "active" ) );
-                    btn.classList.add( "active" );
-                    sortSelect.value = "default";
-                    resetRender();
-                }
-            } )
+            filterButtons.forEach( btn => btn.addEventListener( 'click', function () {
+                filterButtons.forEach( b => b.classList.remove( "active" ) );
+                btn.classList.add( "active" );
+                sortSelect.value = "default";
+                resetRender();
+            } ) )
 
             // Search Functionality for search/filter input field
 
@@ -225,15 +223,15 @@
             }
 
             // Sort-group Functionality
-            sortSelect.change = function () {
+            sortSelect.addEventListener( 'change', function () {
                 resetRender()
-            }
+            } )
 
-            layoutBtn.click = function () {
+            layoutBtn.addEventListener( 'click', function () {
                 grid.classList.toggle( "single" );
                 layoutBtn.classList.toggle( "active" );
                 layoutIcon.textContent = grid.classList.contains( "single" ) ? "📄" : "🧱";
-            }
+            } )
 
             // Functionality listening list to bottom
             const observerList = new IntersectionObserver(
@@ -269,11 +267,12 @@
                     card.innerHTML = `
                         <div class="card-preview">${item.preview}</div>
                         <div class="card-content">
-                            <div>
-                                <div class="card-type" style="background:${tagColors[item.type]}">${item.type}</div>
-                                <div class="card-title">${item.title}</div>
-                                <div class="card-description">${item.description}</div>
+                              <div class='card-header'>
+                                <div class="card-badge" style="background-color:${tagColors[item.type]}">${item.type}</div>
+                                <div class="card-update-time">${item.updatedAt}</div>
                             </div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-desc">${item.description}</p>
                         </div>
                     `;
                     grid.appendChild( card );
