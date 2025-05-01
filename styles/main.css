@@ -3,14 +3,22 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 :root {
+    --background-color: #fff;
+    --secondary-background-color: #f7f7f7;
+
     --bg: #252423;
     --text: #e6e6e6;
+    --text-color: #444;
+    --text-accent: #252423;
     --accent: #00d1ff;
     --logo-color: #ff4d4d;
+    --sponsor-color: #bf3e3e;
+
+    --icon-size: 20px;
 }
 
 body {
@@ -18,6 +26,11 @@ body {
     color: var(--text);
     overflow-x: hidden;
     font-weight: 300;
+}
+
+/* No scroll class */
+.no-scroll {
+    overflow: hidden;
 }
 
 /* canvas styles */
@@ -58,10 +71,71 @@ canvas {
     color: var(--logo-color);
 }
 
+/* SVG Icon Styles */
+.menu-icon {
+    display: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    z-index: 9999;
+}
+
+.menu-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+}
+
+.menu-icon rect {
+    transition: all 0.3s ease;
+}
+
+.menu-icon.active rect:first-child {
+    transform: translateY(4px) rotate(45deg) !important;
+}
+
+.menu-icon.active rect:nth-child(2) {
+    opacity: 0 !important;
+    transform: scaleX(0) !important;
+}
+
+.menu-icon.active rect:last-child {
+    transform: translateY(-4px) rotate(-45deg) !important;
+}
+
+.svg-icon {
+    pointer-events: none;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+/* Transform Origin for SVG Elements */
+.svg-icon * {
+    transform-box: fill-box;
+    transform-origin: 50% 50% 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: width 0.3s ease;
+    z-index: 1;
+    display: none;
+}
+
+.overlay.active {
+    width: 100%;
+    display: block;
+}
+
 /* Navigation */
 nav {
     display: flex;
-    gap: 20px;
+    gap: 1rem;
     align-items: center;
 }
 
@@ -72,17 +146,46 @@ nav {
     text-decoration: none;
     font-size: 14px;
     opacity: 0.85;
-    transition: opacity 0.3s;
-    font-weight: 400;
+    transition: opacity 0.3s ease;
+    font-weight: 600;
 }
 
 .nav-item:hover {
     opacity: 1;
+    color: var(--text);
 }
 
-.nav-item i {
-    margin-right: 6px;
+.github,
+.nav-item i,
+.nav-item span {
+    width: 24px;
+    height: 24px;
     font-size: 14px;
+    text-align: center;
+    line-height: 25px;
+    margin-right: 6px;
+}
+
+.nav-item p {
+    display: none;
+}
+
+.nav-item .github {
+    margin: 0;
+    opacity: 0.6;
+    background-image: url(../files/github_24dp.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.nav-item .github:hover {
+    border-radius: 50%;
+    opacity: 1;
+    background-color: #000;
 }
 
 .sponsor-btn {
@@ -96,10 +199,12 @@ nav {
     color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 .sponsor-btn:hover {
+    border: 1px solid var(--sponsor-color);
+    color: var(--logo-color);
     background-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -199,6 +304,7 @@ h1 {
 .github-start i {
     font-size: 12px;
 }
+
 .github-start span {
     background-image: url('/files/github_24dp.svg');
     background-repeat: no-repeat;
@@ -217,7 +323,6 @@ footer {
     color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
     align-items: center;
-    margin: 60px 0 0 0;
 }
 
 .sponsors {
@@ -235,42 +340,115 @@ footer {
     align-items: center;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .main-content {
-        flex-direction: column;
-        padding: 40px 20px;
+/* mobile */
+
+@media all and (max-width: 640px) {
+    .nav-header {
+        padding: 1rem 1rem;
     }
 
-    .left-content,
-    .right-content {
+    .logo a {
+        font-size: 20px;
+    }
+
+    .menu-icon {
+        display: block;
+    }
+
+    nav,
+    .sideba {
+        display: none;
+        position: fixed;
+        right: -250px;
+        top: 0;
+        width: 180px;
+        height: 100vh;
+        padding: 60px 20px;
+        gap: 1rem;
+        overflow: scroll;
+        background-color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        transition: right 0.3s ease;
+        z-index: 99;
+    }
+
+    nav.open,
+    .sideba.active {
+        right: 0;
+    }
+
+    .nav-item {
+        font-size: 12px;
+    }
+
+    .nav-item .github {
+        margin-right: 6px;
+        background-size: var(--icon-size);
+    }
+
+    .nav-item p {
+        display: block;
+    }
+
+    .sponsor-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .main-content {
+        padding: 20px 16px 30px;
+        flex-direction: column;
+    }
+
+    .left-content {
         width: 100%;
     }
 
     .right-content {
-        margin-top: 40px;
+        width: 100%;
+        padding: 30px 0 10px;
     }
 
     h1 {
-        font-size: 48px;
-    }
-}
-
-@media (max-width: 768px) {
-    header {
-        padding: 20px;
+        font-size: 28px;
     }
 
-    h1 {
-        font-size: 36px;
+    .subtitle {
+        font-size: 16px;
+        min-width: auto;
     }
 
     .visualization {
-        height: 300px;
+        height: 200px;
     }
 
     .placeholder-image {
-        width: 250px;
-        height: 250px;
+        width: 200px;
+        height: 200px;
+    }
+
+    .bottom-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .start-badge,
+    .github-start {
+        width: 100%;
+        justify-content: center;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px 10px;
+    }
+
+    .sponsors {
+        width: 100%;
+        justify-content: center;
     }
 }
