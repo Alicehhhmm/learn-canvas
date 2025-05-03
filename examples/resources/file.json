@@ -1,0 +1,7 @@
+{
+    "graph": [],
+    "animat": [],
+    "interaction": ["bezier-curve", "line-dash-offset", "piecewise-bezier-urves", "quadratic-curve", "reset-and-clearRect"],
+    "effects": ["particle-line-color", "particle-line"],
+    "other": []
+}

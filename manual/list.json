@@ -7,7 +7,7 @@
         },
         "基础": {
             "Canvas 简介": "article/fundamentals",
-            "Canvas 基本使用": "article/fundamentals"
+            "Canvas 基本使用": "article/basic_usage"
         },
         "绘制形状": {
             "栅格 (grid) 和坐标空间": "article/fundamentals",
